@@ -2,7 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 import           Data.Monoid (mappend)
 import           Hakyll
-
+import           Text.Pandoc.Options
 
 --------------------------------------------------------------------------------
 main :: IO ()
@@ -15,6 +15,10 @@ main = hakyll $ do
         route   idRoute
         compile compressCssCompiler
 
+    match "katex/**" $ do
+        route   idRoute
+        compile copyFileCompiler
+
     -- TODO: Add about and contact pages
     match (fromList [ ]) $ do
         route   $ setExtension "html"
@@ -24,7 +28,7 @@ main = hakyll $ do
 
     match "posts/*" $ do
         route $ setExtension "html"
-        compile $ pandocCompiler
+        compile $ myPandocCompiler
             >>= loadAndApplyTemplate "templates/post.html"    postCtx
             >>= loadAndApplyTemplate "templates/default.html" postCtx
             >>= relativizeUrls
@@ -65,3 +69,22 @@ postCtx :: Context String
 postCtx =
     dateField "date" "%B %e, %Y" `mappend`
     defaultContext
+
+myPandocCompiler :: Compiler (Item String)
+myPandocCompiler = pandocCompilerWith myReaderOptions myWriterOptions
+
+myWriterOptions :: WriterOptions
+myWriterOptions = defaultHakyllWriterOptions
+      { writerHTMLMathMethod = MathJax ""
+      }
+
+myReaderOptions :: ReaderOptions
+myReaderOptions =  defaultHakyllReaderOptions
+    { readerExtensions = (readerExtensions defaultHakyllReaderOptions) <> extensionsFromList
+               [ Ext_tex_math_dollars           -- TeX math between $..$ or $$..$$
+               , Ext_tex_math_single_backslash  -- TeX math btw (..) [..]
+               , Ext_tex_math_double_backslash  -- TeX math btw \(..\) \[..\]
+               , Ext_latex_macros               -- Parse LaTeX macro definitions (for math only)
+               , Ext_inline_code_attributes     -- Ext_inline_code_attributes
+               ]
+    }
