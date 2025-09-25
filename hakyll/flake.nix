@@ -44,11 +44,23 @@ let pkgs = import nixpkgs { inherit system; };
     '';
   };
  in {
-      apps = {
+      apps = rec {
         site = flake-utils.lib.mkApp {
           drv = builder;
           exePath = "/bin/site";
         };
+
+        watch = let derivation = pkgs.writeShellScript "hakyll-watch" ''
+          xdg-open _site/index.html;
+
+          ${builder}/bin/site watch
+          '';
+          in {
+          type = "app";
+          program = "${derivation}";
+        };
+
+        default = watch;
       };
       packages = {
         inherit builder site;
