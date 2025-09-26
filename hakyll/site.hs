@@ -4,6 +4,11 @@ import           Data.Monoid (mappend)
 import           Hakyll
 import           Text.Pandoc.Options
 
+{- TODO:
+- https://tony-zorman.com/posts/block-sidenotes.html :: Sidenotes instead of footnotes
+- https://jaspervdj.be/hakyll/tutorials/05-snapshots-feeds.html :: RSS/Atom/JSON feeds
+- https://tony-zorman.com/posts/katex-with-hakyll :: Server-side LaTeX rendering
+-}
 --------------------------------------------------------------------------------
 main :: IO ()
 main = hakyll $ do
