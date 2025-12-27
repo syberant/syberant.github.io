@@ -1,8 +1,9 @@
 <article>
     <section class="header">
-        Posted on $date$
-        $if(author)$
-            by $author$
+        $if(date)$
+            Posted on $date$
+        $else$
+            Draft, here be dragons.
         $endif$
     </section>
     <section>

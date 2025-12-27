@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>syberant's blog - Lifelong recording is actually feasible</title>
+        <link rel="stylesheet" href="../css/default.css" />
+
+        <!-- KaTeX math -->
+        <link rel="stylesheet" href="../katex/katex.min.css">
+        <!-- The loading of KaTeX is deferred to speed up page rendering -->
+        <script defer src="../katex/katex.min.js"></script>
+        <!-- To automatically render math in text elements, include the auto-render extension: -->
+        <script defer src="../katex/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+    </head>
+    <body>
+        <header>
+            <div class="logo">
+                <a href="../">syberant's blog</a>
+            </div>
+            <nav>
+                <a href="../">Home</a>
+                <!-- <a href="/about.html">About</a> -->
+                <!-- <a href="/contact.html">Contact</a> -->
+                <a href="../archive.html">Archive</a>
+            </nav>
+        </header>
+
+        <main role="main">
+            <h1>Lifelong recording is actually feasible</h1>
+            <article>
+    <section class="header">
+        
+            Draft, here be dragons.
+        
+    </section>
+    <section>
+        <p>A <a href="https://en.wikipedia.org/wiki/Lifelog">lifelog</a> is “a personal record of one’s daily life”.
+It can be seen as a type of <a href="https://en.wikipedia.org/wiki/Sousveillance">sousveillance</a>, if everyone did this then everybody is surveilling everybody.
+The <a href="https://en.wikipedia.org/wiki/Quantified_self">quantified self</a> movement is also related.</p>
+<h3 id="visual">Visual</h3>
+<p>Could I archive a 24/7 stream of what I see every day?
+Possibly, but you’d either get incredibly crappy resolution or incredibly large storage needs.
+A 2 hour movie (in kinda crappy but perfectly watchable Full-HD) tends to be about 2 GB.
+That would give <span class="math inline">\(12 * 2 = 24\)</span> GB per day, subtract 8 hours because we are sleeping and we still get 16 GB / day or 5844 GB / year.
+So over a lifetime of 80 years that would be about 467 TB.</p>
+<p>This is a <em>large</em> amount of data, darn expensive to store (for now?),
+not actually that useful (how are you going to find anything?), but surprisingly enough technically feasible.</p>
+<p>Suppose we set aside 20TB<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> of space to record what we see and again subtract 8 hours per day for sleeping.
+Assuming an average photo size of 2MB this means we can take a photo every <span class="math inline">\(80 * 364.24 * 16 * 3600 / \frac{20 * 10^{12}}{2 * 10^6} \approx 168\)</span> seconds or every 3 minutes.
+That should still give a pretty good idea of what you’ve been up to at a particular day.</p>
+<h3 id="audio">Audio</h3>
+<p>What about sound? Can I store everything I hear?
+I’m gonna try a kinda crappy but perfectly functional bitrate of 128 kbps.
+This means 16 KB/s = 1.38 GB per day. If we account for sleeping again it’s 0.922 GB per day.
+A lifetime is sounding actually kind of reasonable at 26.9 TB.</p>
+<h3 id="text">Text</h3>
+<p>How about we try to store everything you read and type?
+This one isn’t really recording all the time so keep in mind that I’m calculating an upper bound and it will be <em>much</em> lower in reality.
+We’re also assuming everything will be stored in raw ASCII (1 byte per character) while in practice text compresses very well.</p>
+<p>Humans (of which I am one) can read at roughly 200 words per minute.
+<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>
+Reading 200 words per minute, 16 hours per day (which is NOT realistic) and an average of 5 characters per word gives 5.6 GB over an 80 year lifetime.
+This is perfectly reasonable to store (and will be <em>much</em> smaller in reality).</p>
+<p>I’m taking 120 wpm as a reasonable upper boundary of what you can type, this is over 3 times the speed of “hunt and peck” typing.
+Repeating the calculation I arrive at an upper bound of 3.4 GB over 80 years.</p>
+<h4 id="recording-terminals">Recording terminals</h4>
+<p>Hey! Terminals are all text aren’t they?<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>
+Yes. Is there some way to just record that?
+<a href="https://docs.asciinema.org/how-it-works/">asciinema</a> does it!</p>
+<!-- Slightly more info on file size at <https://github.com/orgs/asciinema/discussions/52> -->
+<!-- Additional discussion on possibilities at <https://github.com/orgs/asciinema/discussions/86> -->
+<h3 id="recording-your-internet-traffic">Recording your internet traffic</h3>
+<p><a href="https://gwern.net/archiving">Someone at gwern.net</a> archived all the URLs they browsed in a year, removed files over 4MB
+<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>
+and came in at 30-50 GB a year.</p>
+<p>After manual pruning and some compression the author came in at 55GB after 6 years.</p>
+<p>All this is actually surprisingly doable.
+You may not have all of the videos you watched and podcasts you listened,
+but all of the text you read is there.</p>
+<h2 id="problems">Problems</h2>
+<h3 id="ethics-and-laws">Ethics and laws</h3>
+<p>All kinds of ethical and legal issues here of course.
+Much of them can probably be solved by only very selectively sharing your recordings with anybody else, but a lot will remain.</p>
+<h3 id="security">Security</h3>
+<p>Help! This is a bad idea.
+You’d have probably even larger concerns than with <a href="https://en.wikipedia.org/wiki/Microsoft_Recall">Microsoft Recall</a>.
+It is thus <strong>very important</strong> that you yourself are in control,
+not some data-hungry, privacy-invading, multinational megacorporation.</p>
+<p>I highly recommend airgapping your system, this eliminates much of the attack vectors but does make e.g. backups more difficult.
+These backups should also be done to another airgapped system.</p>
+<h3 id="should-you-actually-attempt-this">Should you actually attempt this?</h3>
+<p>Probably not. It should at least be good as a thought experiment.
+It’s worth noting that recording different things provides different risks.</p>
+<p>A keylogger is mostly only a risk to yourself, although keylogged passwords could pose a risk to your work/volunteer organisations as well.</p>
+<p>Constant recording of audio/video in private settings is highly illegal in many countries.
+Public places tend to have fewer restrictions, especially if you make very clear that you are recording.</p>
+<p>An automatic face-blur could help, although it will inevitably fail in edge cases.
+It would also mess up your precious images with your friends and family.</p>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>This fits on <strong>one</strong> admittedly very large harddisk!<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Apparently the anatomy of the eye gives a hard limit of 900 words per minute.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>An exception to this is the various nonstandard protocols for images that have been hacked on so far.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>These are most likely bulky audio/video files. Normal images so far usually come in below 4MB but their size is going up and high-res pictures already often exceed that.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+    </section>
+</article>
+
+        </main>
+
+        <footer>
+            Site proudly generated by
+            <a href="https://jaspervdj.be/hakyll">Hakyll</a>
+
+            <br>
+
+            <style>
+              .katex-version {display: none;}
+              .katex-version::after {content:"0.10.2 or earlier";}
+            </style>
+            <span class="katex">
+              <span class="katex-mathml">The KaTeX stylesheet is not loaded!</span>
+              <span class="katex-version rule">KaTeX stylesheet version: </span>
+            </span>
+        </footer>
+    </body>
+</html>

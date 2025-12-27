@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>syberant's blog - Readable RISC-V Assembly Dialect</title>
+        <link rel="stylesheet" href="../css/default.css" />
+
+        <!-- KaTeX math -->
+        <link rel="stylesheet" href="../katex/katex.min.css">
+        <!-- The loading of KaTeX is deferred to speed up page rendering -->
+        <script defer src="../katex/katex.min.js"></script>
+        <!-- To automatically render math in text elements, include the auto-render extension: -->
+        <script defer src="../katex/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+    </head>
+    <body>
+        <header>
+            <div class="logo">
+                <a href="../">syberant's blog</a>
+            </div>
+            <nav>
+                <a href="../">Home</a>
+                <!-- <a href="/about.html">About</a> -->
+                <!-- <a href="/contact.html">Contact</a> -->
+                <a href="../archive.html">Archive</a>
+            </nav>
+        </header>
+
+        <main role="main">
+            <h1>Readable RISC-V Assembly Dialect</h1>
+            <article>
+    <section class="header">
+        
+            Draft, here be dragons.
+        
+    </section>
+    <section>
+        <p>Nog wat nagedacht over mijn idee om een RISCV-assembly dialect te maken.
+Om nuttig te zijn moet het denk ik 1-op-1 mappen naar “normaal” assembly, dit zou ik met <code>lean</code> kunnen bewijzen.
+Verder moet het denk ik zoveel mogelijk op C lijken, met misschien wat functional dingen erbij.</p>
+<p>Backwards-compatibility kunnen we geven door b.v. ook “normale” assembly syntax te accepteren als <code>ADD r1, r2, r3</code>.
+Ook zit ik te denken aan de vorm <code>r1 = ADD r2, r3</code> waarbij het eerste register het <em>destination</em> register is.</p>
+<p><code>ADDI r1, r1, 8</code> zouden we kunnen weergeven als <code>r1 += 8</code>.
+<code>ADDI r1, r2, 8</code> als <code>r1 = r2 + 8</code>.
+<code>ADD r1, r2, r3</code> als <code>r1 = r2 + r3</code>.
+<code>NOP</code> stel ik me voor als keyword.
+<code>MV r1, r2</code> als <code>r1 = r2</code>.</p>
+<p>Instead of manually using a register we could also use an <em>alias</em> to give it a name, a practice reminiscent of local variables.
+Aliases are scoped, can be redefined/shadowed and will be resolved fully during compile time.
+Maybe give warning/error if aliases ever overlap to the same register?
+Maybe also if the register an alias points to is used?
+Error for a write, warning for a read?</p>
+<p>We don’t necessarily need to handle pseudoinstructions but they are prime candidates for syntactic sugar.
+<code>LUI</code> and <code>ADDI</code> together are used to implement <code>LI</code>, this might lead to confusion as to exactly which instructions are used to implement <code>r1 = &lt;NUMBER&gt;</code>.
+Is <code>LUI</code> or <code>ADDI</code> used first? In case they’re not both necessary, is the other one used with a 0 immediate?</p>
+<p>Expressions are easy for immediates, we just handle them compile-time.
+Can we do them for registers too? We need to be very careful and explicit about ordering.
+<code>r1 = r2 + r3</code> is simple.
+<code>r1 = r2 + r3 * r4 - 3</code> is more complicated, maybe we can use RPN?
+<code>r1 = r2 r3 r4 * + 3 -</code> doesn’t seem very readable though.
+In practice these calculations might be interleaved using additional registers for enhanced instruction-level parallelism.</p>
+<p>What to do when the destination register appears in the expression?
+We’d probably need an additional temporary register, unless it’s only used in the first operation.
+We can just forbid this.</p>
+<h3 id="example-change-endianness">Example: Change Endianness</h3>
+<p>Example from <a href="https://projectf.io/posts/riscv-compiler-explorer/img/ce-interface.png" class="uri">https://projectf.io/posts/riscv-compiler-explorer/img/ce-interface.png</a>:</p>
+<pre><code>srli a1, a0, 8
+lui a2, 16
+addi a2, a2, -256
+and a1, a1, a2
+
+srli a3, a0, 24
+or a1, a1, a3
+
+and a2, a2, a0
+slli a2, a2, 8
+
+slli a0, a0, 24
+or a0, a0, a2
+or a0, a0, a1
+
+ret</code></pre>
+<p>would become</p>
+<pre><code>a1 = a0 &gt;&gt; 8
+a2 = 0xff00
+a1 &amp;= a2
+
+a3 = a0 &gt;&gt; 24
+a1 |= a3
+
+a2 &amp;= a0
+a2 &lt;&lt;= 8
+
+a0 &lt;&lt;= 24
+a0 |= a2
+a0 |= a1
+
+ret</code></pre>
+<p>or</p>
+<pre><code>a1 = a0 &gt;&gt; 8
+a2 = 0xff00
+a1 &amp;= a2
+
+a3 = a0 &gt;&gt; 24
+a1 |= a3
+
+a2 = (a2 &amp; a0) &lt;&lt; 8
+a0 = (a0 &lt;&lt; 24) | a2 | a1
+
+ret</code></pre>
+<p>or</p>
+<pre><code>alias word = a0
+
+a1 = (word &gt;&gt; 8) &amp; (a2 = 0xff00)
+
+a1 |= (a3 = word &gt;&gt; 24)
+
+a2 = (a2 &amp; word) &lt;&lt; 8
+
+a0 = (word &lt;&lt; 24) | a2 | a1
+
+ret</code></pre>
+<p>or</p>
+<pre><code>alias word = a0
+
+// NOTE: a2 and a3 are set &quot;just-in-time&quot; style to retain the same ordering
+a1 = (word &gt;&gt; 8) &amp; (a2 = 0xff00) | (a3 = word &gt;&gt; 24)
+
+a2 = (a2 &amp; word) &lt;&lt; 8
+
+a0 = (word &lt;&lt; 24) | a2 | a1
+
+ret</code></pre>
+<p>Using this new assembly dialect might also finally put an end to the AT&amp;T vs. Intel syntax debate :)</p>
+<p>Another (unrelated) improvement that could be made to the experience of reading assembly is color-coding the registers,
+I think this would be a very useful addition to “normal” syntax highlighting.</p>
+<h3 id="example-binary-search">Example: Binary Search</h3>
+<p>A binary search example from <a href="https://maz.utk.edu/my-courses/cosc230/book/example-risc-v-assembly-programs/" class="uri">https://maz.utk.edu/my-courses/cosc230/book/example-risc-v-assembly-programs/</a>:</p>
+<pre><code>  addi t1, zero, 0
+  addi t2, a2, (-1)
+1:
+  bgt t1, t2, 1f
+  add t0, t1, t2
+  srai t0, t0, 1
+  slli t4, t0, 2
+  add t4, t4, a0
+  lw t4, t4, 0
+  ble a1, t4, 2f
+  addi t1, t0, 1
+  j 1b
+2:
+  bge a1, t4, 2f
+  addi t2, t0, (-1)
+  j 1b
+2:
+  mv a0, t0
+1:
+  ret</code></pre>
+<p>could become</p>
+<pre><code>  t1 = 0
+  t2 = a2 - 1
+1:
+  bgt t1, t2, 1f
+  t0 = t1 + t2
+  srai t0, t0, 1
+  t4 = t0 &lt;&lt; 2
+  t4 += a0
+  lw t4, t4, 0
+  ble a1, t4, 2f
+  t1 = t0 + 1
+  j 1b
+2:
+  bge a1, t4, 2f
+  t2 = t0 - 1
+  j 1b
+2:
+  a0 = t0
+1:
+  ret</code></pre>
+<p>or</p>
+<pre><code>  t1 = 0
+  t2 = a2 - 1
+1:
+  if t1 &lt;= t2 {
+    t0 = t1 + t2
+    srai t0, t0, 1
+
+    t4 = t0 &lt;&lt; 2
+    t4 += a0
+    lw t4, t4, 0
+
+    if a1 &gt; t4 {
+      t1 = t0 + 1
+      j 1b
+    }
+2:
+    if a1 &lt; t4 {
+      t2 = t0 - 1
+      j 1b
+    }
+2:
+    a0 = t0
+  }
+1:
+  ret</code></pre>
+<p>We might be able to make assembly look like basic C code with a lot of <code>goto</code> :)</p>
+<h2 id="other-unusual-assembly-things">Other unusual assembly things</h2>
+<p><a href="https://en.wikipedia.org/wiki/Typed_assembly_language">Typed assembly</a> is also really cool.
+Might be worth investigating it and maybe stealing some features.</p>
+<p>We could add types and e.g. overload operators (like <code>+</code>, <code>+=</code>, etc.) to emit different instructions depending on the type of the alias or the type of register (integer, floating point or vector).</p>
+<p><a href="https://en.wikipedia.org/wiki/High_Level_Assembly">High Level Assembly</a> could also provide/spark useful ideas.</p>
+<h3 id="properties">Properties</h3>
+<p>We might sometimes want to know (or prove) certain properties about our assembly.</p>
+<p>Some ideas:
+- Memory:
+- read and/or/neither write?
+- stack/heap?
+- Register usage: Input (whose contents we use/rely on) and output (whose contents we change).
+- Large overlap between input and output sets is common.
+- Maybe useful to assert compliance to calling conventions?
+- Should stack spilling (and restoring) count?
+- Control flow?</p>
+    </section>
+</article>
+
+        </main>
+
+        <footer>
+            Site proudly generated by
+            <a href="https://jaspervdj.be/hakyll">Hakyll</a>
+
+            <br>
+
+            <style>
+              .katex-version {display: none;}
+              .katex-version::after {content:"0.10.2 or earlier";}
+            </style>
+            <span class="katex">
+              <span class="katex-mathml">The KaTeX stylesheet is not loaded!</span>
+              <span class="katex-version rule">KaTeX stylesheet version: </span>
+            </span>
+        </footer>
+    </body>
+</html>

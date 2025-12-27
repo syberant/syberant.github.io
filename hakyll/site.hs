@@ -45,7 +45,7 @@ main = hakyll $ do
     create ["archive.html"] $ do
         route idRoute
         compile $ do
-            posts <- recentFirst =<< loadAll "posts/*"
+            posts <- recentFirst =<< loadAll postPattern
             let archiveCtx =
                     listField "posts" postCtx (return posts) `mappend`
                     constField "title" "Archives"            `mappend`
@@ -56,11 +56,24 @@ main = hakyll $ do
                 >>= loadAndApplyTemplate "templates/default.html" archiveCtx
                 >>= relativizeUrls
 
+    create ["drafts.html"] $ do
+        route idRoute
+        compile $ do
+            posts <- loadAll $ "posts/*" .&&. complement postPattern
+            let draftsCtx =
+                    listField "posts" postCtx (return posts) `mappend`
+                    constField "title" "Drafts"              `mappend`
+                    defaultContext
+
+            makeItem ""
+                >>= loadAndApplyTemplate "templates/drafts.html" draftsCtx
+                >>= loadAndApplyTemplate "templates/default.html" draftsCtx
+                >>= relativizeUrls
 
     match "index.html" $ do
         route idRoute
         compile $ do
-            posts <- recentFirst =<< loadAll "posts/*"
+            posts <- recentFirst =<< loadAll postPattern
             let indexCtx =
                     listField "posts" postCtx (return posts) `mappend`
                     defaultContext
@@ -74,6 +87,9 @@ main = hakyll $ do
 
 
 --------------------------------------------------------------------------------
+postPattern :: Pattern
+postPattern = "posts/202*"
+
 postCtx :: Context String
 postCtx =
     dateField "date" "%B %e, %Y" `mappend`
