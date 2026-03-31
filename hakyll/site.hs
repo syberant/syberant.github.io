@@ -3,6 +3,7 @@
 import           Data.Monoid (mappend)
 import           Hakyll
 import           Text.Pandoc.Options
+import           SideNoteHTML (usingSideNotesHTML)
 
 {- TODO:
 - https://tony-zorman.com/posts/block-sidenotes.html :: Sidenotes instead of footnotes
@@ -96,7 +97,7 @@ postCtx =
     defaultContext
 
 myPandocCompiler :: Compiler (Item String)
-myPandocCompiler = pandocCompilerWith myReaderOptions myWriterOptions
+myPandocCompiler = pandocCompilerWithTransform myReaderOptions myWriterOptions (usingSideNotesHTML myWriterOptions)
 
 myWriterOptions :: WriterOptions
 myWriterOptions = defaultHakyllWriterOptions
