@@ -11,16 +11,15 @@ This is in opposition to a filesystem meant for operating systems, meaning one m
 
 I realized that I didn't know any such filesystems meant for users, which I call *Human File Systems*.
 During a discussion, my father came up with the *Files* app on iOS as a possible exception.
-
 But the Files app was only reluctantly added by Apple, after people complained for *over a decade* that they couldn't use files on iOS.
 It was not exactly meant to be a revolution, more as a compromise to stop one.
 
-## ZFS
+### ZFS
 I consider ZFS to be a large step forwards for users.
 It's less focused on performance and operating systems and more on system administrators.
 In my view it does however still not cater to actual *users*.
 
-I consider its most important feature to be sharing space between "partitions"^[ZFS calls them *datasets*].
+I personally consider its most important feature to be sharing space between "partitions"^[ZFS calls them *datasets*].
 A user with two `ext4` partitions on a disk must decide up front how much space each one gets.
 Changing this allocation is possible but painful and involves manual action and scary commands.
 ZFS handles this completely automatically, allocating space to whichever data set needs it in a *pool* without any user interaction.
@@ -29,31 +28,31 @@ ZFS handles this completely automatically, allocating space to whichever data se
 Additional nice features for users include:
 
 - Snapshots
-- Simplifying backups
+- Simplifying backups (`zfs send | zfs receive`)
 - Redundancy with RAID
 - Compression, this works well for large amounts of plaintext
 
-## Semantic and tagging filesystems
-Or, why hierarchical filesystems are actually a good idea.
-
-Hierarchical filesystems give files a *place* in the *space* of the filesystem.
-Humans are very good at navigating physical spaces, they also turn it to be pretty good at navigating hierarchical filesystems.
+### Semantic and tagging filesystems: Why hierarchical filesystems are actually a good idea.
+Hierarchical filesystems give files a specific *place* in the *space* of the filesystem.
+Humans are very good at navigating physical spaces, they also turn out to be pretty good at navigating hierarchical filesystems.
 
 Semantic and tagging filesystems lose this connection to a place.
 They ask the user to *search* for stuff using *queries*^[I consider a combination of tags to be a query.].
-Although tagging and search systems have shown great promise in collaborative systems of large groups of people (search engines, social media) they have consistently sucked for individual usecases.
+Although tagging and search systems have shown great promise in collaborative systems of large groups of people (search engines, social media)
+^[See [folksonomies](https://en.wikipedia.org/wiki/Folksonomy)]
+they have consistently sucked for individual usecases.
 
-TODO: Mention [folksonomies](https://en.wikipedia.org/wiki/Folksonomy).
+People consistently seem to [prefer navigation over search](https://thesephist.com/posts/search-vs-nav/).
 
-People consistently [prefer navigation over search](https://thesephist.com/posts/search-vs-nav/).
-
-## Graph filesystems
+### Graph filesystems
 I consider the most promising direction to be [graph filesystems](https://fsgeek.ca/2019/05/09/graph-file-systems/).
 It's a straight-up generalisation of hierarchical filesystems and thus remains backwards-compatible with existing cultural practices around files.
 
 Graph filesystems allow forming [heterarchies](https://en.wikipedia.org/wiki/Heterarchy) which can be used to create multiple views into the same information.
 
-## URL filesystems
+I also suspect graph filesystems might be very suitable for AR/VR user interfaces.
+
+### URLs and file paths
 URLs mimic file paths very closely.
 There's even a way to encode file paths in URLs via the `file` URI.
 
@@ -68,9 +67,28 @@ In the URL system this is unnecessary.
 
 See <https://fkohlgrueber.github.io/blog/tree-structure-of-file-systems/> for more detail.
 
-## Further reading
-- <https://en.wikipedia.org/wiki/Semantic_triple> and <https://en.wikipedia.org/wiki/Semantic_Web> making use of it
+### What now?
+Filesystems have been made for operating systems, not users.
+Changing this will be hard and take a long time, if it succeeds at all.
+But after over 50 years of hierarchical filesystems I think we should try.
+Maybe bring back [versioning file systems](https://en.wikipedia.org/wiki/Versioning_file_system)?
+
+There are a plethora of (academic) semantic and tagging filesystems, none of which seem to be actually used in real life.
+I've been experimenting with my own graph filesystem for a while
+but it's got a bunch of hardcoding and is very specialized for my precise usecase.
+^[You might call this [Situated Software](https://gwern.net/doc/technology/2004-03-30-shirky-situatedsoftware.html) or [Home-Cooked Software](https://www.robinsloan.com/notes/home-cooked-app/)]
+It's still only minimally viable even for my usage,
+I don't really see a path to changing that anytime soon.
+
+One thing I wish to highlight is that I think having alternatives to hierarchical filesystems *in actual real-world use* is crucial.
+That's where we'll find the deficiencies and unexpected benefits or synergies.
+I believe there are a lot of *unknown unknowns* about these alternatives.
+
+I am mildly excited and incredibly curious about the future.
+
+### Further reading
+- [Semantic triples](https://en.wikipedia.org/wiki/Semantic_triple) and the [Semantic Web](https://en.wikipedia.org/wiki/Semantic_Web) making use of it
 - <https://www.nayuki.io/page/designing-better-file-organization-around-tags-not-hierarchies>
-- <https://newsletter.squishy.computer/p/all-you-need-is-links>
 - <https://newsletter.squishy.computer/p/knowledge-structures>
-- The Apple Newton apparently used a novel method of storing data: <https://www.canicula.com/newton/prog/soups.htm>
+- <https://newsletter.squishy.computer/p/all-you-need-is-links>
+- The Apple Newton PDA apparently used a novel method of storing data: <https://www.canicula.com/newton/prog/soups.htm>

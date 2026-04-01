@@ -20,7 +20,7 @@ Illustrations might need to be left out, they just take up too much space.
 
 Now for copyrighted material.
 <!-- I don't want DRM, it makes a lot of normal legal things incredibly frustrating.
-My sister bought me an ebook once, it took me multiple hours and other people's computers to be able to read it on my device.
+My sister bought me an ebook, it took me multiple hours and other people's computers to be able to read it on my device.
 It was a good book but the process was nightmarish, and it still has DRM. -->
 Could I buy a microSD card with all of the ebooks a publisher has?
 How much would they ask?
@@ -36,7 +36,7 @@ All history books about WWII?
 
 Can I buy a bundle of all work from every winner of the Nobel Prize in Literature?
 A [top 100](https://www.theguardian.com/books/2015/aug/17/the-100-best-novels-written-in-english-the-full-list)/1000/whatever books?
-^[[Plenty](https://en.wikipedia.org/wiki/Le_Monde's_100_Books_of_the_Century) of other lists exist.]
+^[[Plenty](https://en.wikipedia.org/wiki/Le_Monde's_100_Books_of_the_Century) of [other](https://en.wikipedia.org/wiki/Bokklubben_World_Library) lists exist.]
 
 In essence I'm trying to turn the subscription model (e.g. by Amazon) on its head.
 The subscription model offers you a very large amount of books for a (relatively) fixed amount of dollars per month/year,

@@ -6,7 +6,7 @@ A [lifelog](https://en.wikipedia.org/wiki/Lifelog) is "a personal record of one'
 It can be seen as a type of [sousveillance](https://en.wikipedia.org/wiki/Sousveillance), if everyone did this then everybody is surveilling everybody.
 The [quantified self](https://en.wikipedia.org/wiki/Quantified_self) movement is also related.
 
-### Visual
+### Video
 Could I archive a 24/7 stream of what I see every day?
 Possibly, but you'd either get incredibly crappy resolution or incredibly large storage needs.
 A 2 hour movie (in kinda crappy but perfectly watchable Full-HD) tends to be about 2 GB.
@@ -18,7 +18,7 @@ not actually that useful (how are you going to find anything?), but surprisingly
 
 Suppose we set aside 20TB^[This fits on **one** admittedly very large harddisk!] of space to record what we see and again subtract 8 hours per day for sleeping.
 Assuming an average photo size of 2MB this means we can take a photo every $80 * 364.24 * 16 * 3600 / \frac{20 * 10^{12}}{2 * 10^6} \approx 168$ seconds or every 3 minutes.
-That should still give a pretty good idea of what you've been up to at a particular day.
+That should still give a decent idea of what you've been up to at a particular day.
 
 ### Audio
 What about sound? Can I store everything I hear?
@@ -48,32 +48,34 @@ Yes. Is there some way to just record that?
 <!-- Additional discussion on possibilities at <https://github.com/orgs/asciinema/discussions/86> -->
 
 ### Recording your internet traffic
-[Someone at gwern.net](https://gwern.net/archiving) archived all the URLs they browsed in a year, removed files over 4MB
+[Someone at gwern.net](https://gwern.net/archiving) archived all the URLs they browsed in a year, then removed files over 4MB
 ^[These are most likely bulky audio/video files. Normal images so far usually come in below 4MB but their size is going up and high-res pictures already often exceed that.]
 and came in at 30-50 GB a year.
 
 After manual pruning and some compression the author came in at 55GB after 6 years.
 
 All this is actually surprisingly doable.
-You may not have all of the videos you watched and podcasts you listened,
+You may not have all of the videos you watched and podcasts you listened to,
 but all of the text you read is there.
 
 ## Problems
 ### Ethics and laws
 All kinds of ethical and legal issues here of course.
-Much of them can probably be solved by only very selectively sharing your recordings with anybody else, but a lot will remain.
+^[Yes, things that are legal are not automatically ethical and I hate that we seem to be losing that distinction. Ethical things can also be illegal, although we generally try to make these situations rare.]
+Some of them can be solved by only very selectively sharing your recordings with anybody else, but a lot will remain.
 
 ### Security
 Help! This is a bad idea.
-You'd have probably even larger concerns than with [Microsoft Recall](https://en.wikipedia.org/wiki/Microsoft_Recall).
+You'd have probably even larger concerns than with [Microsoft Recall](https://en.wikipedia.org/wiki/Microsoft_Recall) given that this recording is even more invasive.
 It is thus **very important** that you yourself are in control,
 not some data-hungry, privacy-invading, multinational megacorporation.
 
 I highly recommend airgapping your system, this eliminates much of the attack vectors but does make e.g. backups more difficult.
 These backups should also be done to another airgapped system.
+Or just, you know, don't try to record everything.
 
 ### Should you actually attempt this?
-Probably not. It should at least be good as a thought experiment.
+Probably not, but as a thought experiment I do find it interesting.
 It's worth noting that recording different things provides different risks.
 
 A keylogger is mostly only a risk to yourself, although keylogged passwords could pose a risk to your work/volunteer organisations as well.
