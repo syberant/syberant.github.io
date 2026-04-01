@@ -23,6 +23,7 @@
                 <a href="../">Home</a>
                 <!-- <a href="/about.html">About</a> -->
                 <!-- <a href="/contact.html">Contact</a> -->
+                <a href="https://github.com/syberant/syberant.github.io">Git Repo</a>
                 <a href="../archive.html">Archive</a>
             </nav>
         </header>
@@ -36,71 +37,108 @@
         
     </section>
     <section>
-        <p>Or, picking a fight with hierarchical filesystems (which is all of them).
-<!-- See [[id:4fa51437-2672-43fd-9a38-88acff79daed][Human File System]] --></p>
-<p>Recently I asked myself whether I knew any filesystems specifically meant for users.
+        Or, picking a fight with hierarchical filesystems (which is all of them).
+<!-- See [[id:4fa51437-2672-43fd-9a38-88acff79daed][Human File System]] -->
+<p></p>
+Recently I asked myself whether I knew any filesystems specifically meant for users.
 I define a filesystem meant for users as one that would be meant to contain your home directory and aid you in managing your files.
-This is in opposition to a filesystem meant for operating systems, meaning one meant to contain your root directory with all of your system files and yes, as an afterthought often your home directory as well.</p>
-<p>I realized that I didn’t know any such filesystems meant for users, which I call <em>Human File Systems</em>.
-During a discussion, my father came up with the <em>Files</em> app on iOS as a possible exception.</p>
-<p>But the Files app was only reluctantly added by Apple, after people complained for <em>over a decade</em> that they couldn’t use files on iOS.
-It was not exactly meant to be a revolution, more as a compromise to stop one.</p>
-<h2 id="zfs">ZFS</h2>
-<p>I consider ZFS to be a large step forwards for users.
+This is in opposition to a filesystem meant for operating systems, meaning one meant to contain your root directory with all of your system files and yes, as an afterthought often your home directory as well.
+<p></p>
+I realized that I didn’t know any such filesystems meant for users, which I call <em>Human File Systems</em>.
+During a discussion, my father came up with the <em>Files</em> app on iOS as a possible exception.
+But the Files app was only reluctantly added by Apple, after people complained for <em>over a decade</em> that they couldn’t use files on iOS.
+It was not exactly meant to be a revolution, more as a compromise to stop one.
+<h3 id="zfs">ZFS</h3>
+<p></p>
+I consider ZFS to be a large step forwards for users.
 It’s less focused on performance and operating systems and more on system administrators.
-In my view it does however still not cater to actual <em>users</em>.</p>
-<p>I consider its most important feature to be sharing space between “partitions”<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.
+In my view it does however still not cater to actual <em>users</em>.
+<p></p>
+I personally consider its most important feature to be sharing space between “partitions”<!--
+--><label for="sn-0" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-0" class="margin-toggle" /><div class="sidenote">ZFS calls them <em>datasets</em></div><!--
+-->.
 A user with two <code>ext4</code> partitions on a disk must decide up front how much space each one gets.
 Changing this allocation is possible but painful and involves manual action and scary commands.
 ZFS handles this completely automatically, allocating space to whichever data set needs it in a <em>pool</em> without any user interaction.
-<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
-<p>Additional nice features for users include:</p>
+<!--
+--><label for="sn-1" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-1" class="margin-toggle" /><div class="sidenote">Optionally limits can be set on a dataset to prevent it from taking up all of the available capacity.</div><!--
+-->
+<p></p>
+Additional nice features for users include:
 <ul>
 <li>Snapshots</li>
-<li>Simplifying backups</li>
+<li>Simplifying backups (<code>zfs send | zfs receive</code>)</li>
 <li>Redundancy with RAID</li>
 <li>Compression, this works well for large amounts of plaintext</li>
 </ul>
-<h2 id="semantic-and-tagging-filesystems">Semantic and tagging filesystems</h2>
-<p>Or, why hierarchical filesystems are actually a good idea.</p>
-<p>Hierarchical filesystems give files a <em>place</em> in the <em>space</em> of the filesystem.
-Humans are very good at navigating physical spaces, they also turn it to be pretty good at navigating hierarchical filesystems.</p>
-<p>Semantic and tagging filesystems lose this connection to a place.
-They ask the user to <em>search</em> for stuff using <em>queries</em><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.
-Although tagging and search systems have shown great promise in collaborative systems of large groups of people (search engines, social media) they have consistently sucked for individual usecases.</p>
-<p>TODO: Mention <a href="https://en.wikipedia.org/wiki/Folksonomy">folksonomies</a>.</p>
-<p>People consistently <a href="https://thesephist.com/posts/search-vs-nav/">prefer navigation over search</a>.</p>
-<h2 id="graph-filesystems">Graph filesystems</h2>
-<p>I consider the most promising direction to be <a href="https://fsgeek.ca/2019/05/09/graph-file-systems/">graph filesystems</a>.
-It’s a straight-up generalisation of hierarchical filesystems and thus remains backwards-compatible with existing cultural practices around files.</p>
-<p>Graph filesystems allow forming <a href="https://en.wikipedia.org/wiki/Heterarchy">heterarchies</a> which can be used to create multiple views into the same information.</p>
-<h2 id="url-filesystems">URL filesystems</h2>
-<p>URLs mimic file paths very closely.
-There’s even a way to encode file paths in URLs via the <code>file</code> URI.</p>
-<p>Nevertheless there is a key difference between URLs and file paths:
+<h3 id="semantic-and-tagging-filesystems-why-hierarchical-filesystems-are-actually-a-good-idea.">Semantic and tagging filesystems: Why hierarchical filesystems are actually a good idea.</h3>
+<p></p>
+Hierarchical filesystems give files a specific <em>place</em> in the <em>space</em> of the filesystem.
+Humans are very good at navigating physical spaces, they also turn out to be pretty good at navigating hierarchical filesystems.
+<p></p>
+Semantic and tagging filesystems lose this connection to a place.
+They ask the user to <em>search</em> for stuff using <em>queries</em><!--
+--><label for="sn-2" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-2" class="margin-toggle" /><div class="sidenote">I consider a combination of tags to be a query.</div><!--
+-->.
+Although tagging and search systems have shown great promise in collaborative systems of large groups of people (search engines, social media)
+<!--
+--><label for="sn-3" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-3" class="margin-toggle" /><div class="sidenote">See <a href="https://en.wikipedia.org/wiki/Folksonomy">folksonomies</a></div><!--
+-->
+they have consistently sucked for individual usecases.
+<p></p>
+People consistently seem to <a href="https://thesephist.com/posts/search-vs-nav/">prefer navigation over search</a>.
+<h3 id="graph-filesystems">Graph filesystems</h3>
+<p></p>
+I consider the most promising direction to be <a href="https://fsgeek.ca/2019/05/09/graph-file-systems/">graph filesystems</a>.
+It’s a straight-up generalisation of hierarchical filesystems and thus remains backwards-compatible with existing cultural practices around files.
+<p></p>
+Graph filesystems allow forming <a href="https://en.wikipedia.org/wiki/Heterarchy">heterarchies</a> which can be used to create multiple views into the same information.
+<p></p>
+I also suspect graph filesystems might be very suitable for AR/VR user interfaces.
+<h3 id="urls-and-file-paths">URLs and file paths</h3>
+<p></p>
+URLs mimic file paths very closely.
+There’s even a way to encode file paths in URLs via the <code>file</code> URI.
+<p></p>
+Nevertheless there is a key difference between URLs and file paths:
 A file path always encodes a directory <strong>or</strong> a file, a URL <em>can</em> (although uncommon) be both.
 A trailing <code>/</code> in a URL is <em>semantically meaningful</em> and can alter the response you get.
-For URLs, paths can both contain subpaths <strong>and</strong> data.</p>
-<p>This can come in handy.
+For URLs, paths can both contain subpaths <strong>and</strong> data.
+<p></p>
+This can come in handy.
 The Rust programming language, for example, uses a <code>mod.rs</code> file to store the data of the module named after its parent directory.
-In the URL system this is unnecessary.</p>
-<p>See <a href="https://fkohlgrueber.github.io/blog/tree-structure-of-file-systems/" class="uri">https://fkohlgrueber.github.io/blog/tree-structure-of-file-systems/</a> for more detail.</p>
-<h2 id="further-reading">Further reading</h2>
+In the URL system this is unnecessary.
+<p></p>
+See <a href="https://fkohlgrueber.github.io/blog/tree-structure-of-file-systems/" class="uri">https://fkohlgrueber.github.io/blog/tree-structure-of-file-systems/</a> for more detail.
+<h3 id="what-now">What now?</h3>
+<p></p>
+Filesystems have been made for operating systems, not users.
+Changing this will be hard and take a long time, if it succeeds at all.
+But after over 50 years of hierarchical filesystems I think we should try.
+Maybe bring back <a href="https://en.wikipedia.org/wiki/Versioning_file_system">versioning file systems</a>?
+<p></p>
+There are a plethora of (academic) semantic and tagging filesystems, none of which seem to be actually used in real life.
+I’ve been experimenting with my own graph filesystem for a while
+but it’s got a bunch of hardcoding and is very specialized for my precise usecase.
+<!--
+--><label for="sn-4" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-4" class="margin-toggle" /><div class="sidenote">You might call this <a href="https://gwern.net/doc/technology/2004-03-30-shirky-situatedsoftware.html">Situated Software</a> or <a href="https://www.robinsloan.com/notes/home-cooked-app/">Home-Cooked Software</a></div><!--
+-->
+It’s still only minimally viable even for my usage,
+I don’t really see a path to changing that anytime soon.
+<p></p>
+One thing I wish to highlight is that I think having alternatives to hierarchical filesystems <em>in actual real-world use</em> is crucial.
+That’s where we’ll find the deficiencies and unexpected benefits or synergies.
+I believe there are a lot of <em>unknown unknowns</em> about these alternatives.
+<p></p>
+I am mildly excited and incredibly curious about the future.
+<h3 id="further-reading">Further reading</h3>
 <ul>
-<li><a href="https://en.wikipedia.org/wiki/Semantic_triple" class="uri">https://en.wikipedia.org/wiki/Semantic_triple</a> and <a href="https://en.wikipedia.org/wiki/Semantic_Web" class="uri">https://en.wikipedia.org/wiki/Semantic_Web</a> making use of it</li>
+<li><a href="https://en.wikipedia.org/wiki/Semantic_triple">Semantic triples</a> and the <a href="https://en.wikipedia.org/wiki/Semantic_Web">Semantic Web</a> making use of it</li>
 <li><a href="https://www.nayuki.io/page/designing-better-file-organization-around-tags-not-hierarchies" class="uri">https://www.nayuki.io/page/designing-better-file-organization-around-tags-not-hierarchies</a></li>
-<li><a href="https://newsletter.squishy.computer/p/all-you-need-is-links" class="uri">https://newsletter.squishy.computer/p/all-you-need-is-links</a></li>
 <li><a href="https://newsletter.squishy.computer/p/knowledge-structures" class="uri">https://newsletter.squishy.computer/p/knowledge-structures</a></li>
-<li>The Apple Newton apparently used a novel method of storing data: <a href="https://www.canicula.com/newton/prog/soups.htm" class="uri">https://www.canicula.com/newton/prog/soups.htm</a></li>
+<li><a href="https://newsletter.squishy.computer/p/all-you-need-is-links" class="uri">https://newsletter.squishy.computer/p/all-you-need-is-links</a></li>
+<li>The Apple Newton PDA apparently used a novel method of storing data: <a href="https://www.canicula.com/newton/prog/soups.htm" class="uri">https://www.canicula.com/newton/prog/soups.htm</a></li>
 </ul>
-<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
-<hr />
-<ol>
-<li id="fn1"><p>ZFS calls them <em>datasets</em><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Optionally limits can be set on a dataset to prevent it from taking up all of the available capacity.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>I consider a combination of tags to be a query.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</section>
     </section>
 </article>
 

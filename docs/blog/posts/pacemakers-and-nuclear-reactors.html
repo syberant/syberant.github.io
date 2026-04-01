@@ -23,6 +23,7 @@
                 <a href="../">Home</a>
                 <!-- <a href="/about.html">About</a> -->
                 <!-- <a href="/contact.html">Contact</a> -->
+                <a href="https://github.com/syberant/syberant.github.io">Git Repo</a>
                 <a href="../archive.html">Archive</a>
             </nav>
         </header>
@@ -36,26 +37,40 @@
         
     </section>
     <section>
-        <p>NOTE: None of what I’m going to tell you about are original thoughts, they have been floating around online in various forms and slowly been absorbed by me through osmosis.
-I make no claim to originality but also can’t point to some concrete source, this is my own retelling.</p>
-<p>Doing error handling properly is difficult.
-Different people/companies/languages/cultures do it in different ways and I think it’s fair to say that we haven’t “solved” error handling yet.</p>
-<p>I’ll just tell you straight that I don’t “know” error handling and won’t pretend to have the answer to your questions.
-My own favorite programming language, Rust, has multiple popular methods of doing error handling with a lot of (seemingly good natured, that’s nice) debate on how you “should” do it.</p>
-<p>But there is one thing that seems to be universally important.
-You should ask yourself: Where does my usecase fall on the spectrum between pacemakers and nuclear reactors?</p>
+        NOTE: None of what I’m going to tell you about are original thoughts, they have been floating around online in various forms.
+I make no claim to originality but also can’t point to some concrete source, this is my own retelling.
+<p></p>
+Doing error handling properly is difficult.
+Different people/companies/languages/communities/etc. do it in different ways and I think it’s fair to say that we haven’t “solved” error handling yet.
+<p></p>
+I’ll just tell you straight that I don’t “know” error handling and won’t pretend to have the answer to your questions.
+My own favorite programming language, Rust, has multiple popular methods of doing error handling with a lot of (seemingly good natured, that’s nice) debate on how you “should” do it.
+<!--
+--><label for="sn-0" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-0" class="margin-toggle" /><div class="sidenote">TODO: links to some blogposts</div><!--
+-->
+<p></p>
+But there is one thing that seems to be universally important.
+You should ask yourself: Where does my usecase fall on the spectrum between pacemakers and nuclear reactors?
 <h3 id="pacemakers">Pacemakers</h3>
-<p>Pacemakers are devices that are implanted next to your heart to make sure it beats reliably.
+<p></p>
+Pacemakers are devices that are implanted next to your heart to make sure it beats reliably.
 Skipping over a lot of medical detail which I don’t know because I’m not a doctor:
-A pacemaker malfunctioning or shutting off entirely carries a substantially increased risk of death.</p>
-<p>Pacemakers <em>should not kill people</em>.
-I don’t care what you do, but that heart must <em>keep beating</em>.</p>
+A pacemaker malfunctioning or shutting off entirely carries a substantially increased risk of death.
+<p></p>
+Pacemakers <em>should not kill people</em>.
+I don’t care what you do, but that heart must <em>keep beating</em>.
 <h3 id="nuclear-reactors">Nuclear reactors</h3>
-<p>At the other end of the spectrum we have nuclear reactors.
-I don’t care whether or not you think you can recover from that error,
+<p></p>
+At the other end of the spectrum we have nuclear reactors.
+I don’t care whether or not you think you might be able to recover from that error,
 if there is anything even slightly unexpected you <strong>shut that thing down immediately</strong>.
-Everything in a nuclear reactor is engineered to ensure that outcome.</p>
-<p>Moreover they don’t trust the code one bit so ensure there are plenty of analog, mechanical or materials sciency things that will ensure a nuclear power plant <strong>stops</strong> instead of coating half a continent in nuclear waste.</p>
+Everything in a nuclear reactor is engineered to ensure that outcome.
+<p></p>
+Moreover they don’t trust the code one bit so ensure there are plenty of analog, mechanical or materials sciency things that will ensure a nuclear power plant <strong>stops</strong> instead of coating half a continent in nuclear waste.
+<h3 id="conclusion">Conclusion</h3>
+<p></p>
+Should your program continue as best it can or error out at first opportunity?
+This is for you to decide.
     </section>
 </article>
 
