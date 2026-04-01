@@ -1,3 +1,11 @@
+:root {
+  --code-bg-colour: #fdf6e3;
+  --code-colour: #657b83;
+
+  --quote-bg-colour: #f5f5f5;
+  --quote-sidebar-colour: #ccc;
+}
+
 html {
   font-size: 62.5%;
 }
@@ -140,6 +148,31 @@ article .header {
   }
 }
 
+/* Block quotes */
+blockquote {
+  background: var(--quote-bg-colour);
+  font-size: 1em;
+  border-left: .7em solid var(--quote-sidebar-colour);
+  margin: 1em .5em;
+  padding: .5em 1em;
+  line-height: 1.2em;
+  /* quotes: "\201C""\201D"; */
+}
+
+blockquote p {
+  display: inline;
+}
+
+/* Source code */
+pre {
+  background: var(--code-bg-colour);
+  color: var(--code-colour);
+
+  padding: 0.4em 0.8em;
+  margin: 1em 0.2em;
+
+  overflow-x: scroll;
+}
 
 /* Sidenotes, stolen from:
   https://github.com/slotThe/slotThe.github.io/blob/f4c22e2add974d9ba35ef0fc63895efafb1eae21/css/sidenotes.css */
