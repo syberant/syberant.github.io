@@ -4,7 +4,7 @@ title: "This should exist: Buying libraries on microSD"
 
 <!-- TODO? Mention ZIM files. -->
 Today you can download (for free) *all* of Wikipedia.
-^[See KiwiX]
+^[See [KiwiX](https://download.kiwix.org/zim/).]
 The text-only version from 20?? I have stored on my SSD takes up about 55GB.
 Project Gutenberg contains most well-known non-copyrighted books and is freely available;
 although the quality of the files is of course not up to publishers standards.
@@ -26,6 +26,9 @@ Could I buy a microSD card with all of the ebooks a publisher has?
 How much would they ask?
 
 Would a price of $1000 for all children's books in your native language work?
+^[Kindle Unlimited costs $12/month at the time of writing,
+that comes out to $11520 over a (reading) lifespan of 80 years. \
+Of course, once they have gotten enough people hooked on their service they'll slowly ~boil the frog~ raise prices.]
 Would people pay and publishers dare?
 How would publishers divide the revenue of such a sale?
 
@@ -48,7 +51,8 @@ But this time I would *own* them, read them offline, frictionlessly transfer the
 and be sure nobody will yank it out from underneath me.
 I get a system I can *rely* upon.
 
-It's basically the opposite of "you'll own nothing and be happy".
+It's basically the opposite of
+["you'll own nothing and be happy"](https://en.wikipedia.org/wiki/You'll_own_nothing_and_be_happy).
 
 ## File format
 I think books should ideally be in EPUB format,
@@ -67,7 +71,7 @@ Suppose I have "all books published before 2020".
 Can I buy "all books published between 2020 and 2025" or do I have to again buy "all books published before 2025" every time I update my collection?
 
 ## Piracy
-Gaining access to such a collection is of course a pirate's wet dream.
+Gaining access to such a collection is of course a pirate site's wet dream.
 Publishers might be very afraid of it.
 But I'd argue almost all books are *already* pretty easily available on pirate sites.
 The loss isn't as bad as it seems, it mostly makes it a lot more convenient to just pay for your books.
