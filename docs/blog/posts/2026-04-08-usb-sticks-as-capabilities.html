@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>syberant's blog - USB sticks as capabilities</title>
+        <link rel="stylesheet" href="../css/default.css" />
+
+        <!-- KaTeX math -->
+        <link rel="stylesheet" href="../katex/katex.min.css">
+        <!-- The loading of KaTeX is deferred to speed up page rendering -->
+        <script defer src="../katex/katex.min.js"></script>
+        <!-- To automatically render math in text elements, include the auto-render extension: -->
+        <script defer src="../katex/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+    </head>
+    <body>
+        <header>
+            <div class="logo">
+                <a href="../">syberant's blog</a>
+            </div>
+            <nav>
+                <a href="../">Home</a>
+                <!-- <a href="/about.html">About</a> -->
+                <!-- <a href="/contact.html">Contact</a> -->
+                <a href="https://github.com/syberant/syberant.github.io">Git Repo</a>
+                <a href="../archive.html">Archive</a>
+            </nav>
+        </header>
+
+        <main role="main">
+            <h1>USB sticks as capabilities</h1>
+            <article>
+    <section class="header">
+        
+            Posted on April  8, 2026
+        
+    </section>
+    <section>
+        There is an interesting concept in computer security called
+<a href="https://en.wikipedia.org/wiki/Capability-based_security">capabilities</a>.
+In short, a program can do something (like read/write a file or open a TCP connection) only if it holds a <em>capability</em> to do such a thing,
+which is very reminiscent of file descriptors.
+<p></p>
+Confusingly, POSIX also describes something it calls “capabilities” but these are very coarse-grained
+<!--
+--><label for="sn-0" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-0" class="margin-toggle" /><div class="sidenote">Linux’s <code>CAP_SYS_ADMIN</code> reminds me of a <a href="https://en.wikipedia.org/wiki/God_object">god object</a>, look it up with <code>man capabilities</code></div><!--
+-->
+and can’t be transferred between processes.
+They do thus not qualify as “true” capabilities.
+<p></p>
+<a href="https://en.wikipedia.org/wiki/WebAssembly_System_Interface">WASI</a> is probably the best chance we currently have for bringing capabilities to the masses
+but there exist plenty of other (niche) projects:
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Capsicum_(Unix)">Capsicum</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Genode">Genode</a></li>
+<li><a href="https://en.wikipedia.org/wiki/SeL4">seL4</a></li>
+<li><a href="https://en.wikipedia.org/wiki/RedoxOS">RedoxOS</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Capability_Hardware_Enhanced_RISC_Instructions">CHERI</a> (hardware)</li>
+</ul>
+<p></p>
+I’ve been experimenting on my Linux system
+<!--
+--><label for="sn-1" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-1" class="margin-toggle" /><div class="sidenote">NixOS to be precise, you can <a href="https://github.com/syberant/nix-config">view my exact config</a></div><!--
+-->
+with bringing capabilities to the physical world.
+<p></p>
+By default my laptop has its WiFi-chip turned off and a blocklist of distracting websites.
+I can restore my internet connection by either plugging in Ethernet
+<!--
+--><label for="sn-2" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-2" class="margin-toggle" /><div class="sidenote">Itself a physical manifestation of a capability</div><!--
+-->
+or a special USB stick whose ID I’ve hardcoded.
+Another USB stick also undoes my blocklist.
+<!--
+--><label for="sn-3" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-3" class="margin-toggle" /><div class="sidenote">I’ll write an explanation for how at some point, in short: udev, rfkill and iptables</div><!--
+-->
+This has helped me cut down on (among other things) a <a href="https://xkcd.com/477/">news addiction</a>.
+<h2 id="imagined-ideal-system">Imagined ideal system</h2>
+<p></p>
+In some imaginary future world I foresee it being easy and useful to do stuff like this.
+Let me just quickly jot down a list of possibilities.
+<p></p>
+Internet:
+<ul>
+<li>Unrestricted</li>
+<li>Blocklist of distracting domains</li>
+<li>Limited speed (3G, or even 56k dialup)</li>
+<li>Allow-list of domains (and ports?)</li>
+<li>Offline</li>
+</ul>
+<p></p>
+Display:
+<ul>
+<li>Unrestricted</li>
+<li>Application-specific transparency</li>
+<li>Black &amp; white</li>
+</ul>
+<p></p>
+Audio:
+<ul>
+<li>Unrestricted</li>
+<li>Blocklist/allowlist of outputs<!--
+--><label for="sn-4" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-4" class="margin-toggle" /><div class="sidenote">Builtin speakers, headphone jack, bluetooth and usb. Did I miss any?</div><!--
+--></li>
+<li>Turned off</li>
+</ul>
+<p></p>
+Besides these “outputs” we also have some “inputs” on which we’d like our outputs to depend:
+<ul>
+<li>USB devices, the presence of specific devices could be used to allow/disallow any of the above “outputs”.
+Arbitrary USB devices could thus function like physicial keys.</li>
+<li>Power, charging generally signifies I’m at a desk, we might permit more.
+Discharging could mean that I’m at a less formal place like a couch.</li>
+<li>Location (GPS?),
+maybe we’d like to prevent access to personal files while at work.
+Or only allow access to a specific game while at a friends house.
+<!-- I used iOS's shortcuts to automatically call my family if I was struggling to leave my room --></li>
+<li>Time, perhaps no more access to work emails after 17:30?</li>
+</ul>
+    </section>
+</article>
+
+        </main>
+
+        <footer>
+            Site proudly generated by
+            <a href="https://jaspervdj.be/hakyll">Hakyll</a>
+
+            <br>
+
+            <style>
+              .katex-version {display: none;}
+              .katex-version::after {content:"0.10.2 or earlier";}
+            </style>
+            <span class="katex">
+              <span class="katex-mathml">The KaTeX stylesheet is not loaded!</span>
+              <span class="katex-version rule">KaTeX stylesheet version: </span>
+            </span>
+        </footer>
+    </body>
+</html>
