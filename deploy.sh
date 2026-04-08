@@ -1,5 +1,7 @@
 #!/bin/sh
 
+git stash --include-untracked
+
 mkdir -p ./docs/blog
 
 # TODO: Check that we have committed all of our files.
@@ -8,3 +10,5 @@ mkdir -p ./docs/blog
 cd hakyll
 ./result/bin/site rebuild
 cp -r _site/* ../docs/blog/
+
+git stash pop
