@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>syberant's blog - An ode to sd, a home for all my hacky shell scripts</title>
+        <link rel="stylesheet" href="../css/default.css" />
+
+        <!-- KaTeX math -->
+        <link rel="stylesheet" href="../katex/katex.min.css">
+        <!-- The loading of KaTeX is deferred to speed up page rendering -->
+        <script defer src="../katex/katex.min.js"></script>
+        <!-- To automatically render math in text elements, include the auto-render extension: -->
+        <script defer src="../katex/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+    </head>
+    <body>
+        <header>
+            <div class="logo">
+                <a href="../">syberant's blog</a>
+            </div>
+            <nav>
+                <a href="../">Home</a>
+                <!-- <a href="/about.html">About</a> -->
+                <!-- <a href="/contact.html">Contact</a> -->
+                <a href="https://github.com/syberant/syberant.github.io">Git Repo</a>
+                <a href="../archive.html">Archive</a>
+            </nav>
+        </header>
+
+        <main role="main">
+            <h1>An ode to sd, a home for all my hacky shell scripts</h1>
+            <article>
+    <section class="header">
+        
+            Draft, here be dragons.
+        
+    </section>
+    <section>
+        <code>sd</code> will not “revolutionize” anything you do,
+it’s just one of those things quietly in the background providing comfort
+without you having to think about it.
+<p></p>
+Here’s how <a href="https://github.com/ianthehenry/sd">the project</a> describes itself:
+<blockquote>
+<p></p>
+<code>sd</code> is a tool for running scripts in your script directory.
+</blockquote>
+<p></p>
+That sounds a bit vague, let me explain why I think this is so good.
+You could also stop reading me and head on over to <a href="https://ianthehenry.com/posts/a-cozy-nest-for-your-scripts">an explanation by the author of <code>sd</code></a>.
+I especially liked this part:
+<blockquote>
+<p></p>
+<code>sd</code> is for script hoarders, who want to rage against the chaos of their <code>~/bin</code>.
+And <code>sd</code> is for people who spend a lot of time combing through <code>ctrl-r</code>,
+looking for that oneliner that they never thought to make into a script,
+because it was too much of a hassle and who knows if they’ll ever run it again.
+</blockquote>
+<p></p>
+Here’s my elevator pitch for <code>sd</code>:
+<blockquote>
+<p></p>
+<code>sd</code> allows you to organise and run all your (oneliner) shell scripts while keeping your <code>$PATH</code> clean.
+</blockquote>
+<h2 id="usage">Usage</h2>
+<p></p>
+Let’s take a look at <code>sd</code> in practice.
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> sd qr <span class="at">--which</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">/home/sybrand/sd/qr</span></span></code></pre></div>
+<p></p>
+My script directory is located at <code>~/sd</code>.
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> sd qr <span class="at">--cat</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env bash</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Show a QR code of the given args</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Useful for sharing URLs and text snippets to your phone.</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-euo</span> pipefail</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$@</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="ex">qrencode</span> <span class="at">-o</span> <span class="at">-</span> <span class="at">--type</span><span class="op">=</span>ANSI256UTF8</span></code></pre></div>
+<p></p>
+If none of the known flags are used, then the script is executed with the given arguments.
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> sd qr <span class="st">'https://github.com/ianthehenry/sd'</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">█████████████████████████████████████</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">█████████████████████████████████████</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ex">████</span> ▄▄▄▄▄ █▄▀▀▄▄██▄ ▄█▀▀█ ▄▄▄▄▄ ████</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">████</span> █   █ ███▄█ ██▄ ▀▄▀ █ █   █ ████</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ex">████</span> █▄▄▄█ ██▄▀▄▀█▄  ▀ ▄▀█ █▄▄▄█ ████</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="ex">████▄▄▄▄▄▄▄█</span> █ ▀▄▀▄▀ █ ▀ █▄▄▄▄▄▄▄████</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="ex">████▄▄█▄</span> █▄█▀ ▄▄▀ ██ ▄▀ █▀▄▀▀█▀▀▄████</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="ex">████▀</span> ▄▀ █▄▀▄▀  ▀ █ ▀ ███▀▀ ▄▀▄█▀████</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="ex">████▀</span>  ▀ █▄▄▄▄█▄▄ ▀█▄▀▀█▄█  ▀▀▀▀ ████</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="ex">█████</span> ▄██ ▄▄ ▄  ▄▄█▄▄█  ▄▄▄▀ █ █ ████</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="ex">████</span>  ▀█ █▄█▀ █▀▀▀  █▀▀ ▄▄██▀▄▀▀█████</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="ex">████</span>  ▄█ ▀▄ ▄ ▄▄▀█▀ █▄█ ██▀█▄ ▀█▄████</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="ex">████▄▄▄█▄█▄▄▀█▄█▄▄</span>  █ ▀█ ▄▄▄  ▄▄█████</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="ex">████</span> ▄▄▄▄▄ ██ ██▄█  ▄▀▀  █▄█ ▄███████</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="ex">████</span> █   █ █  ▄█▀▄▄▀▄██▄▄ ▄▄▄▄█▄ ████</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="ex">████</span> █▄▄▄█ █▀▄▀█▀▀ ▄▀▄ █▄▄▀ ▄▀ ▄ ████</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="ex">████▄▄▄▄▄▄▄█▄▄▄▄▄███▄██▄▄█▄█▄████████</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="ex">█████████████████████████████████████</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="ex">█████████████████████████████████████</span></span></code></pre></div>
+<p></p>
+Yes, this script could have been an <a href="https://en.wikipedia.org/wiki/Alias_(command)">alias</a>.
+The extra namespacing still assures me.
+<h2 id="filesystem">Filesystem</h2>
+<p></p>
+<code>sd</code> is a one-to-one mapping between the arguments it takes and the filesystem.
+<p></p>
+It first drills down into your script directory like subcommands,
+then passes the rest of the arguments to your script.
+<p></p>
+TODO
+<h2 id="kernel">Kernel</h2>
+<p></p>
+One could theoretically obtain the core feature of <code>sd</code> by modifying your kernel’s <code>exec</code> function to traverse directories and pop args as described above.
+You’d then only need an <code lang="bash">alias sd=~/sd</code>.
+<p></p>
+I do not know of any operating system that has done this.
+Neither do I know if it would be practical.
+<h2 id="conclusion">Conclusion</h2>
+<p></p>
+Go! Try it out!
+<p></p>
+Or don’t. You might already have a system for your scripts,
+it could be interesting to compare and contrast.
+<hr />
+<p></p>
+One more thing: <code>sd</code> is so conceptually simple and easy to hack on
+that <a href="https://github.com/syberant/sdr">I rewrote it</a> into a small
+<!--
+--><label for="sn-0" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-0" class="margin-toggle" /><div class="sidenote">210 lines of code spread over 2 files, 1 transitive dependency (on <code>anyhow</code>)</div><!--
+-->
+Rust project.
+<p></p>
+Just because I’m bad at bash and
+didn’t want to forever depend on a third-party script for something this simple and important.
+    </section>
+</article>
+
+        </main>
+
+        <footer>
+            Site proudly generated by
+            <a href="https://jaspervdj.be/hakyll">Hakyll</a>
+
+            <br>
+
+            <style>
+              .katex-version {display: none;}
+              .katex-version::after {content:"0.10.2 or earlier";}
+            </style>
+            <span class="katex">
+              <span class="katex-mathml">The KaTeX stylesheet is not loaded!</span>
+              <span class="katex-version rule">KaTeX stylesheet version: </span>
+            </span>
+        </footer>
+    </body>
+</html>
