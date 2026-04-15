@@ -1,14 +1,19 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-git stash --include-untracked
-
-mkdir -p ./docs/blog
+set -euo pipefail
 
 # TODO: Check that we have committed all of our files.
+git stash --include-untracked
 
-# nix build ./hakyll# && cp -r result/* ./docs/blog/
+# nix build ./hakyll#
 cd hakyll
-./result/bin/site rebuild
-cp -r _site/* ../docs/blog/
+../result/bin/site rebuild
 
+git switch pages
+mkdir -p ./blog
+cp -r _site/* ../blog/
+git commit --all --message Deploy || printf "\x1b[93mFailed to commit, possibly because there were no changes\x1b[0m\n"
+
+git switch master
 git stash pop
+
