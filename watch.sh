@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
+# nix build ./hakyll#builder
 cd hakyll
-# nix build .#builder
-./result/bin/site rebuild
-./result/bin/site watch
+../result/bin/site rebuild
+../result/bin/site watch
