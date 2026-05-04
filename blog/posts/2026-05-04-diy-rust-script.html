@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>syberant's blog - DIY rust-script</title>
+        <link rel="stylesheet" href="../css/default.css" />
+
+        <!-- KaTeX math -->
+        <link rel="stylesheet" href="../katex/katex.min.css">
+        <!-- The loading of KaTeX is deferred to speed up page rendering -->
+        <script defer src="../katex/katex.min.js"></script>
+        <!-- To automatically render math in text elements, include the auto-render extension: -->
+        <script defer src="../katex/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+    </head>
+    <body>
+        <header>
+            <div class="logo">
+                <a href="../">∞ recursion</a>
+            </div>
+            <nav>
+                <a href="../">Blog</a>
+                <a href="https://github.com/syberant/syberant.github.io">Git Repo</a>
+                <a href="../archive.html">Archive</a>
+            </nav>
+        </header>
+
+        <main role="main">
+            <h1>DIY rust-script</h1>
+            <article>
+    <section class="header">
+        
+            Posted on May  4, 2026
+        
+    </section>
+    <section>
+        <a href="https://rust-script.org/">rust-script</a> is a binary for executing standalone Rust scripts.
+Descriptive name, right?
+<p></p>
+Let’s try a quick example of how to use it before we make our own inferior DIY version:
+<div class="sourceCode" id="cb1"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>#<span class="op">!/</span>usr<span class="op">/</span>bin<span class="op">/</span>env rust<span class="op">-</span>script</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">{</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="pp">println!</span>(<span class="st">&quot;Hello world!&quot;</span>)<span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p></p>
+Save it as <code>hello.rs</code>, mark it as executable with <code>chmod +x hello.rs</code> and then execute it with <code>./hello.rs</code>.
+It will print <code>Hello world!</code>.
+<p></p>
+Let’s move on to my DIY version before I start explaining all the things it’s worse at.
+<div class="sourceCode" id="cb2"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>#<span class="op">!/</span>usr<span class="op">/</span>bin<span class="op">/</span>env <span class="op">-</span>S bash <span class="op">-</span>c <span class="st">&quot;TEMP=</span><span class="sc">\</span><span class="er">$</span><span class="st">(mktemp); rustc -O -o </span><span class="sc">\</span><span class="er">$</span><span class="st">TEMP </span><span class="sc">\&quot;\</span><span class="er">$</span><span class="st">1</span><span class="sc">\&quot;</span><span class="st">; </span><span class="sc">\</span><span class="er">$</span><span class="st">TEMP&quot;</span> bash</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">{</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="pp">println!</span>(<span class="st">&quot;Hello world!&quot;</span>)<span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p></p>
+Only the <a href="https://en.wikipedia.org/Shebang_(Unix)">shebang</a> changed, but it looks a lot harder to understand now.
+<p></p>
+The first reason it’s complicated is because we have to do 2 things in 1 command:
+compile our script <em>and</em> execute it.
+This forces us into calling a shell with appropriate arguments.
+And to do that we first have to use the <code>env</code> command.
+<h2 id="env">env</h2>
+<p></p>
+From the <code>env</code> manpage:
+<blockquote>
+<p></p>
+The -S option allows specifying multiple arguments in a script. Running a script named 1.pl containing the following first line:
+<pre><code>#!/usr/bin/env -S perl -w -T
+...</code></pre>
+<p></p>
+Will execute perl -w -T 1.pl
+<p></p>
+Without the ‘-S’ parameter the script will likely fail with:
+<pre><code>/usr/bin/env: 'perl -w -T': No such file or directory</code></pre>
+</blockquote>
+<p></p>
+So that explains the weird <code>env -S</code> part.
+<p></p>
+On to <code>bash -c "&lt;your script here&gt;" bash</code>!
+<h2 id="bash">bash</h2>
+<p></p>
+From the <code>bash</code> manpage:
+<blockquote>
+<p></p>
+If the -c option is present, then commands are read from the first non-option argument <em>command_string</em>. If there are arguments after the
+<em>command_string</em>, the first argument is assigned to <code>$0</code> and any remaining arguments are assigned to the positional parameters. The assignment
+to <code>$0</code> sets the name of the shell, which is used in warning and error messages.
+</blockquote>
+<p></p>
+<code>#!/usr/bin/env -S bash -c "echo \$1" bash</code>
+<!--
+--><label for="sn-0" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-0" class="margin-toggle" /><div class="sidenote">The <code>\</code> in <code>\$1</code> is to protect it from <code>env</code>, try removing it to see the resulting error message!</div><!--
+-->
+will output <code>./hello.rs</code> when run.
+<p></p>
+The kernel gives <code>./hello.rs</code> as an argument to <code>env</code> which in turn gives it to <code>bash</code> which will make it available as <code>$1</code>.
+Thus the last <code>bash</code> in our shebang is purely there to take up the spot of <code>$0</code>.
+<h2 id="rustc">rustc</h2>
+<p></p>
+<code>rustc</code> should be pretty familiar to Rust programmers (although you usually interact with it through <code>cargo</code>).
+<p></p>
+The <code>-O</code> flag is what <code>--release</code> mode uses to enable optimisations and the <code>-o</code> flag tells <code>rustc</code> where to put its resulting binary.
+<h2 id="mktemp">mktemp</h2>
+<p></p>
+This is purely there to prevent race conditions but unfortunately seems to add about 0.08 seconds of delay for me.
+<p></p>
+Other ways of picking a name:
+<ul>
+<li>hardcoding</li>
+<li>SHA sum, could even allow caching compilation results</li>
+</ul>
+<h2 id="why-wouldnt-you-use-the-diy-version">Why wouldn’t you use the DIY version?</h2>
+<p></p>
+Well…
+<ul>
+<li>It’s more complex, meaning you probably have to copy-paste it in every time.</li>
+<li>It doesn’t cache the compilation meaning a delay in startup time
+<!--
+--><label for="sn-1" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-1" class="margin-toggle" /><div class="sidenote">Given the small size of most scripts this actually doesn’t bother me that much despite Rust’s well-deserved notoriety for long compile times. The above <code>hello.rs</code> file took 0.46 seconds to execute on my laptop.</div><!--
+--></li>
+<li>The big one: You can’t have dependencies, <code>rust-script</code> <a href="https://rust-script.org/#scripts">totally can</a>!</li>
+</ul>
+<p></p>
+For me personally, the disadvantages are okay and the increased portability is worth it.
+<p></p>
+One less dependency! Woohoo!
+<p></p>
+It’s also an extra motivating factor to not <code>cargo add</code> a dependency on a crate.
+This does of course put real limits on what you can do given Rust’s small-ish standard library.
+<!--
+--><label for="sn-2" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-2" class="margin-toggle" /><div class="sidenote">e.g. no JSON parsing</div><!--
+-->
+<p></p>
+The <a href="https://github.com/rust-lang/cargo/issues/12207">cargo-script RFC</a> is a plan for a builtin version of this idea.
+Once that is fully implemented this DIY trick is probably no longer useful.
+    </section>
+</article>
+
+        </main>
+
+        <footer>
+            <span style="float: left; text-align: left;">🇪🇺 🇳🇱 <br> 🦀❄️🐧</span>
+
+            Site proudly generated by
+            <a href="https://jaspervdj.be/hakyll">Hakyll</a>
+
+            <br>
+
+            <style>
+              .katex-version {display: none;}
+              .katex-version::after {content:"0.10.2 or earlier";}
+            </style>
+            <span class="katex">
+              <span class="katex-mathml">The KaTeX stylesheet is not loaded!</span>
+              <span class="katex-version rule">KaTeX stylesheet version: </span>
+            </span>
+
+            <br>
+
+            No LLMs were used to create this website
+        </footer>
+    </body>
+</html>
