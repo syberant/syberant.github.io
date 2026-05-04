@@ -4,7 +4,7 @@ title: USB sticks as capabilities
 
 There is an interesting concept in computer security called
 [capabilities](https://en.wikipedia.org/wiki/Capability-based_security).
-In short, a program can do something (like read/write a file or open a TCP connection) only if it holds a *capability* to do such a thing,
+In short, a program can do something (like read/write a file, open a TCP connection, play sound or record audio/video) only if it holds a *capability* to do such a thing,
 which is very reminiscent of file descriptors.
 
 Confusingly, POSIX also describes something it calls "capabilities" but these are very coarse-grained
@@ -60,10 +60,10 @@ Audio:
 Besides these "outputs" we also have some "inputs" on which we'd like our outputs to depend:
 
 - USB devices, the presence of specific devices could be used to allow/disallow any of the above "outputs".
-  Arbitrary USB devices could thus function like physicial keys.
+  Arbitrary USB devices could thus function like physical keys.
 - Power, charging generally signifies I'm at a desk, we might permit more.
   Discharging could mean that I'm at a less formal place like a couch.
-- Location (GPS?),
+- Location (GPS? WiFi network?),
   maybe we'd like to prevent access to personal files while at work.
   Or only allow access to a specific game while at a friends house.
   <!-- I used iOS's shortcuts to automatically call my family if I was struggling to leave my room --> 
