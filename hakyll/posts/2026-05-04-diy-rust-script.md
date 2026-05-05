@@ -88,6 +88,7 @@ Well...
   ^[Given the small size of most scripts this actually doesn't bother me that much despite Rust's well-deserved notoriety for long compile times. The above `hello.rs` file took 0.46 seconds to execute on my laptop.]
 - The big one: You can't have dependencies, `rust-script` [totally can](https://rust-script.org/#scripts)!
 
+## Why would you?
 For me personally, the disadvantages are okay and the increased portability is worth it.
 
 One less dependency! Woohoo!
@@ -97,4 +98,4 @@ This does of course put real limits on what you can do given Rust's small-ish st
 ^[e.g. no JSON parsing]
 
 The [cargo-script RFC](https://github.com/rust-lang/cargo/issues/12207) is a plan for a builtin version of this idea.
-Once that is fully implemented this DIY trick is probably no longer useful.
+Once that is fully implemented this DIY trick is probably no longer useful for Rust but you can still use it for other compiled languages like Zig or Haskell.
