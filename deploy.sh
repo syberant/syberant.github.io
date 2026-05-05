@@ -5,6 +5,8 @@ set -euo pipefail
 # TODO: Check that we have committed all of our files.
 git stash --include-untracked
 
+cd "$(git rev-parse --show-toplevel)"
+
 # nix build ./hakyll#
 cd hakyll
 ../result/bin/site rebuild
