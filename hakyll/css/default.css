@@ -1,3 +1,16 @@
+/* Copied from: https://matklad.github.io/2026/06/04/css-unavoidable-bad-parts.html */
+* {
+  box-sizing: border-box;
+  font-size-adjust: ex-height 0.53;
+  /* TODO: Remove explicit seting of font-size in this whole CSS file */
+}
+
+/* Improve word breaking, important on narrow screens
+   From: https://matklad.github.io/2025/04/22/horizontal-scroll.html */
+p { hyphens: auto; }
+a.url { word-break: break-all; }
+
+/* Main code */
 :root {
   --code-bg-colour: #fdf6e3;
   --code-colour: #657b83;
@@ -198,7 +211,12 @@ main a[href^="http"]:where([href$=".pdf"])::after {
 main a[href^="http"]:where([href*="youtube.com/"])::after {
     content: "YT";
 }
-/* Maybe? LWN, arXiv */
+main a[href^="http"]:where([href*="lwn.net/"])::after {
+    content: "LWN";
+}
+main a[href^="http"]:where([href*="arxiv.org/"])::after {
+    content: "arXiv";
+}
 
 /* Sidenotes, stolen from:
   https://github.com/slotThe/slotThe.github.io/blob/f4c22e2add974d9ba35ef0fc63895efafb1eae21/css/sidenotes.css */
