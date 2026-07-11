@@ -220,7 +220,8 @@ main a[href^="http"]:where([href*="arxiv.org/"])::after {
 
 /* Sidenotes, stolen from:
   https://github.com/slotThe/slotThe.github.io/blob/f4c22e2add974d9ba35ef0fc63895efafb1eae21/css/sidenotes.css */
-body {
+/* Using `main` instead of `body` here fixed a problem I had where footnotes in <ol> lists would not increment the counter. */
+main {
     counter-reset: sidenote-counter;
 }
 
