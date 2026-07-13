@@ -176,6 +176,18 @@ blockquote p {
   display: inline;
 }
 
+/* Tables, see https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Tables */
+table {
+  border-collapse: collapse;
+}
+th, td {
+  vertical-align: top;
+  padding: 0.3em;
+}
+tr:nth-child(even) {
+  background-color: #EEEEEE;
+}
+
 /* Source code */
 pre {
   background: var(--code-bg-colour);
