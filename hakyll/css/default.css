@@ -1,8 +1,11 @@
 /* Copied from: https://matklad.github.io/2026/06/04/css-unavoidable-bad-parts.html */
 * {
   box-sizing: border-box;
+
   font-size-adjust: ex-height 0.53;
   /* TODO: Remove explicit seting of font-size in this whole CSS file */
+
+  line-height: 1.3em;
 }
 
 /* Improve word breaking, important on narrow screens
@@ -168,7 +171,6 @@ blockquote {
   border-left: .7em solid var(--quote-sidebar-colour);
   margin: 1em .5em;
   padding: .5em 1em;
-  line-height: 1.2em;
   /* quotes: "\201C""\201D"; */
 }
 
