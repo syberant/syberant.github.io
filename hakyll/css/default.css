@@ -279,7 +279,7 @@ div .sidenote pre {
 }
 
 .sidenote-number:after {
-    content: counter(sidenote-counter);
+    content: "[" counter(sidenote-counter) "]";
     font-size: 0.8rem;
     top: -0.5rem;
 }
