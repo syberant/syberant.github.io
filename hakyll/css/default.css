@@ -252,6 +252,11 @@ main {
     }
 }
 
+.sidenote:hover {
+  border: 1px solid;
+  padding: 0.2em;
+}
+
 .sidenote code {
     font-size: 0.94em;
 }
