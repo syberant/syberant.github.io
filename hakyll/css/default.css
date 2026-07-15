@@ -212,6 +212,9 @@ main a[href^="http"]:where([href*="arxiv.org/"])::after {
 main {
     counter-reset: sidenote-counter;
 }
+:root {
+  --fg-link: #0000EE;
+}
 
 .sidenote,
 .marginnote,
