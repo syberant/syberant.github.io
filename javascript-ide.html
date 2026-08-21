@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JS IDE Oversimplified</title>
+</head>
+<body>
+  <div class="controlBar">
+    <button onclick="modalContainer.style.display = 'flex'">Hack this page!</button>
+    <pre id="drawError"></pre>
+    <pre id="drawResult"></pre>
+    <button onclick="IDE.clear_globals(); IDE.draw_globals();">Clear global variables</button>
+    <button>Toggle</button>
+  </div>
+  <div id="drawGlobals"></div>
+  <textarea id="customScript" oninput="IDE.evaluateScript()" spellcheck="false" style="display: block; height: 80%; width: 80%; margin: auto;">
+function hello(something) {
+  return "Hello, " + something;
+}
+
+var greetings = hello("you!");
+var a_null = null;
+var an_int = 43;
+var a_string = hello("I contain a \" character\nand more!\nLike a \\ character.\nIt's amazing!");
+var another_string = 'We can also do it this way, \' and " can both be used to make strings.\nMany other programming languages use \' only for an individual character like \'#\'.';
+var a_bool = true;
+var a_list = [1,2,3,4,5
+         ,"JavaScript allows lists to contain values of different types, many other programming languages don't"
+         ,6,7,8];
+var an_object = {a: true, "b": null, c: 3, this_is_always_a_string: "This can be any type you want"};
+
+var im_a_global_variable = 1;
+let im_not_a_global_variable = 2; // Won't be shown on the right!
+const cant_change_me = 3; // Also not a global variable.
+
+im_not_a_global_variable = 7;
+// cant_change_me = 2; // Error!
+an_int = an_int + im_not_a_global_variable;
+
+1 + 2
+  </textarea>
+
+<div id="modalContainer">
+  <style contentEditable="plaintext-only">
+/* This is the CSS stylesheet, it is contained in a <style> tag.
+
+You can edit this, TRY IT, maybe start with some colours.
+Don't worry about breaking something; just reload the page to reset it.
+
+NOTE: Comments with // don't work in CSS, only in JavaScript
+*/
+
+html, body {
+  height: 100%;
+  width: 100%;
+
+  /* Stop adding a bit of space that throws off my calculations! */
+  margin: 0;
+}
+
+#drawGlobals {
+  display: grid;
+  gap: 5px 10px;
+
+  max-width: 50%;
+  max-height: 80%;
+  overflow: scroll;
+
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}
+#drawGlobals div, #drawGlobals p {
+  overflow: scroll;
+  background-color: lightblue;
+  padding: 5px;
+}
+.stringDisplay {
+  background-color: orange;
+}
+.stringDisplay > summary {
+  /* Change the triangle. */
+  list-style: square inside;
+}
+.stringDisplay:hover > summary::after {
+  content: " Click to show rendering";
+}
+.functionDisplay {
+  background-color: blue;
+  color: white;
+}
+.nullDisplay, .undefinedDisplay {
+  background-color: pink;
+  color: red;
+}
+.arrayDisplay {}
+.objectDisplay {}
+.booleanDisplay { font-weight: bold; }
+.numberDisplay {}
+.bigintDisplay {}
+
+.controlBar {
+  display: flex;
+  min-height: 3em;
+  width: 100%;
+}
+
+#drawError, #drawResult {
+  flex-grow: 2;
+  flex-shrink: 2;
+  margin: auto;
+  align-self: stretch;
+  overflow: scroll;
+  max-height: 20vh;
+  min-height: 3em;
+
+  font-size: 1.5em;
+  text-align: center;
+}
+#drawError {
+  color: red;
+  background-color: lightpink;
+}
+#drawResult {
+  color: green;
+  background-color: lightgreen;
+}
+
+/* Makes CSS <style> and JavaScript <script> visible.
+
+  Try removing and changing stuff to see what it does!
+  Reload if you break something (or try to fix it yourself!)
+*/
+script, style {
+  /* This makes it visible, the rest is styling */
+  display: block;
+
+  margin: auto;
+  max-width: 80em;
+  overflow: scroll;
+  max-height: 100%;
+
+  color: white;
+  background: #444;
+  white-space: pre;
+
+  font-family: monospace;
+  font-size: 1.25em;
+
+  padding: 0 1em;
+}
+
+/* The `modalContainer` contains my <style> and <script>, this applies styling to their container. */
+#modalContainer {
+  display: none; /* Will get changed to `flex` by the "Hack this page!" button. */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: scroll;
+
+  background-color: #000; /* Fallback colour */
+  background-color: rgba(0,0,0,0.5); /* Transparent dark tint */
+}
+  </style>
+  <script>
+/* This is JavaScript code contained in a <script> tag.
+
+You can't edit this, sorry.
+
+This evaluates the code you write and updates the page appropriately.
+Every input to the <textarea> calls `IDE.evaluateScript()`.
+*/
+
+var IDE = {
+  // Ignore all of the global variables coming from the browser
+  // Also includes our own `IDE` variable
+  ignore: Object.keys(globalThis),
+
+  // Returns a list of all non-ignored global variables
+  get_globals: () => Object.keys(globalThis).filter((name) => !IDE.ignore.includes(name)),
+
+  // Removes all global variables.
+  // Used to "start afresh".
+  clear_globals: () => IDE.get_globals().forEach((name) => delete globalThis[name]),
+};
+
+// Remove the last value, which should be "IDE"
+IDE.ignore.pop();
+
+IDE.draw_globals = function() {
+  function wrap_string(value) {
+    if (typeof value === "string") {
+      const p = document.createElement("pre");
+      p.innerText = value;
+      return p;
+    } else {
+      return value;
+    }
+  }
+
+  function display_as_javascript(el) {
+    switch (typeof el) {
+      case "undefined":
+      case "boolean":
+      case "number":
+      case "bigint": {
+        let tag = wrap_string(JSON.stringify(el));
+        tag.className = (typeof el) + "Display";
+        return tag;
+      }
+
+      case "string": {
+          const details = document.createElement("details");
+          details.className = "stringDisplay";
+
+          const summary = document.createElement("summary");
+          details.appendChild(summary);
+          // TODO: Wrap in a <pre> element inside summary
+          summary.innerText = JSON.stringify(el);
+
+          const p = document.createElement("pre");
+          p.innerText = el;
+          details.appendChild(p);
+          return details;
+        }
+
+      case "function":
+        let tag = wrap_string(el.toString());
+        tag.className = "functionDisplay";
+        return tag;
+
+      case "object":
+        if (el === null) {
+          let tag = wrap_string("null");
+          tag.className = "nullDisplay";
+          return tag;
+        }
+        if (Array.isArray(el)) {
+          // TODO: Collapsed by default + make clearer this is a list
+          let div = document.createElement("div");
+          el.map(display_as_javascript).map(wrap_string).forEach((el) => div.appendChild(el));
+          div.className = "arrayDisplay";
+          return div;
+        }
+
+        // TODO: Recurse into fields
+        // return JSON.stringify(el);
+        {
+          let div = document.createElement("div");
+          div.className = "objectDisplay";
+          for (const prop in el) {
+            const details = document.createElement("details");
+            const summary = document.createElement("summary");
+            details.appendChild(summary);
+            summary.innerText = prop;
+
+            const p = wrap_string(display_as_javascript(el[prop]));
+            details.appendChild(p);
+
+            div.appendChild(details);
+          }
+          return div;
+        }
+
+      case "symbol":
+      default:
+        console.error("Error displaying ", el)
+        return JSON.stringify(el);
+    }
+  }
+
+  // Show this variable to the user.
+  //
+  // Creates the necessary HTML elements and adds them to the `drawGlobals` div.
+  function draw_variable(name, value) {
+    const nameTag = document.createElement("p");
+    nameTag.innerText = name;
+    nameTag.style.gridColumn = 1;
+
+    const valueDiv = document.createElement("div");
+    valueDiv.style.gridColumn = 2;
+
+    let display = display_as_javascript(value);
+    if (typeof display === "string") {
+      const valueTag = document.createElement("pre");
+      valueTag.innerText = display;
+      display = valueTag;
+    }
+    // We got an HTML element
+    valueDiv.appendChild(display);
+
+    drawGlobals.appendChild(nameTag);
+    drawGlobals.appendChild(valueDiv);
+  }
+
+  // Remove previous elements
+  drawGlobals.innerText = "";
+
+  // Add new elements for each non-ignored global variable
+  for (name of IDE.get_globals()) {
+    const value = globalThis[name];
+
+    draw_variable(name, value);
+  }
+}
+
+IDE.evaluateScript = function() {
+  try {
+    // Evaluates the script in sloppy mode.
+    // This is important because otherwise we can't extract the global variables.
+    let result = eval?.(customScript.value);
+
+    // Hide error tray
+    drawError.style.display = "none";
+    // Show result
+    drawResult.style.display = "block";
+    drawResult.innerText = result;
+    // Fully show globals
+    drawGlobals.style.opacity = 1;
+  } catch (e) {
+    drawError.innerText = e.toString();
+
+    // Only Firefox supports `lineNumber` and `columnNumber`
+    drawError.innerText += '\nat line ' + e.lineNumber + ' and column ' + e.columnNumber;
+
+    // Show error tray
+    drawError.style.display = "block";
+    // Hide result
+    drawResult.style.display = "none";
+    // Diminish globals
+    drawGlobals.style.opacity = 0.6;
+  } finally {
+    IDE.draw_globals();
+  }
+}
+
+// Don't try to change anything about `IDE`.
+// You'd probably break it.
+// This prevents (most of?) those attempts.
+Object.freeze(IDE);
+
+// Evaluate the initial text
+IDE.evaluateScript();
+
+// Allows closing the "Hack this page!" view
+window.onclick = function(event) {
+  if (event.target == modalContainer) {
+    modalContainer.style.display = "none";
+  }
+}
+   </script>
+</div>
+</body>
+</html>
