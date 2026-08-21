@@ -8,33 +8,20 @@ replacing `memoffset::offset_of` with [`core::mem::offset_of`](https://doc.rust-
 Two things made this possible:
 
 1. That crate's MSRV ^[Minimum Supported Rust Version] was above 1.77 which was when `core::mem::offset_of` was stabilised.
-2. The two macros are highly, if not completely, compatible.
-  `memoffset` states that
+2. The two macros should be completely compatible. `memoffset` states that
 
   > If you're using a rustc version greater or equal to 1.77,
   > this crate's offset_of!() macro simply forwards to core::mem::offset_of!().
 
 The PR was merged :)
 
-After a while I wondered *how many other crates still unnecessarily have such a dependency on `memoffset`?*
+I then wondered *how many other crates still unnecessarily have such a dependency on `memoffset`?*
 
-crates.io shows 237 reverse dependencies, of which 1 has already accepted my PR to fix things.
+crates.io showed 237 [reverse dependencies](https://crates.io/crates/memoffset/reverse_dependencies), of which 1 has already accepted my PR to fix things.
 
-Commence project *Remove memoffset*...
-
-----
-
-In a year or so we can start doing the same trick by replacing uses of the `cfg-if` crate with `cfg_select` [introduced recently in 1.95](https://blog.rust-lang.org/2026/04/16/Rust-1.95.0/#cfg-select).
-
-I started thinking about what other old dependencies can be removed:
-
-- `LazyCell` and `LazyLock` [introduced in 1.70](https://blog.rust-lang.org/2023/06/01/Rust-1.70.0/#oncecell-and-oncelock) (partially) replace the `lazy_static` and `once_cell` crates.
-- [`is_terminal`](https://blog.rust-lang.org/2023/06/01/Rust-1.70.0/#isterminal) (rust 1.70) (partially) replaces crates `atty` and `is-terminal`
-- [`pin-utils` crate](https://crates.io/crates/pin-utils) is deprecated and partially replaced since rust 1.68
-
-And then I found [this list](https://rust-lang.github.io/std-replacement-data/all.json)
-from [rust-lang/std-replacement-data](https://github.com/rust-lang/std-replacement-data)
-which contains much better information!
+I am NOT going to fix all of them
+^[and some can't remove this dependency because they want to support a MSRV below 1.77]
+but let's have a go and fire off a bunch of PRs, shall we?
 
 ----
 
@@ -54,6 +41,15 @@ Many issues and PRs were swiftly handled and so far none were refused.
 **There's low-hanging fruit in removing old dependencies.**
 I stumbled on this by accident but the list of other crates (partially) moved into `std` is substantial.
 Admittedly, many uses are only as a dev-dependency.
+
+----
+
+In a year or so we can start doing the same trick by replacing uses of the `cfg-if` crate with `cfg_select` [introduced recently in 1.95](https://blog.rust-lang.org/2026/04/16/Rust-1.95.0/#cfg-select).
+
+I started thinking about what other old dependencies can be removed but
+[this list](https://rust-lang.github.io/std-replacement-data/all.json)
+from [rust-lang/std-replacement-data](https://github.com/rust-lang/std-replacement-data)
+contains exactly that information!
 
 ---
 
@@ -79,7 +75,7 @@ I hope we can all enjoy the benefits of one less dependency :)
 `memoffset::offset_of!` was stabilised as `core::mem::offset_of!` in rust 1.77
 -->
 
-Here's a list sorted by total downloads, I stopped when total downloads dipped below 50k.
+Here's a list of reverse dependencies sorted by total downloads, I stopped when total downloads dipped below 50k.
 
 | Crate | MSRV | PR sent | Fixed/PR accepted |
 | :--- | ---: | ---: | ---: |
@@ -91,7 +87,7 @@ Here's a list sorted by total downloads, I stopped when total downloads dipped b
 | [uds_windows](https://crates.io/crates/uds_windows) | 1.85 | [Yes](https://github.com/haraldh/rust_uds_windows/pull/25) |  |
 | [field-offset](https://crates.io/crates/field-offset) |  | No |  |
 | [solana-program](https://crates.io/crates/solana-program) | 1.81 | [Yes](https://github.com/anza-xyz/solana-sdk/pull/816) | Yes |
-| [egui_glow](https://crates.io/crates/egui_glow) | 1.92 | [Yes](https://github.com/emilk/egui/pull/8304) |  |
+| [egui_glow](https://crates.io/crates/egui_glow) | 1.92 | [Yes](https://github.com/emilk/egui/pull/8304) | Yes |
 | [intrusive-collections](https://crates.io/crates/intrusive-collections) | 1.82 | [Yes](https://github.com/Amanieu/intrusive-rs/pull/107) | Yes |
 | [wasmtime-runtime](https://crates.io/crates/wasmtime-runtime) |  | dead crate |  |
 | [foyer-intrusive-collections](https://crates.io/crates/foyer-intrusive-collections) |  |  |  |
@@ -104,7 +100,7 @@ Here's a list sorted by total downloads, I stopped when total downloads dipped b
 | [starlark](https://crates.io/crates/starlark) | 2024 edition | [Issue](https://github.com/facebook/starlark-rust/issues/214) | Yes |
 | [glium](https://crates.io/crates/glium) |  |  |  |
 | [virtio-queue](https://crates.io/crates/virtio-queue) |  |  |  |
-| [authenticator](https://crates.io/crates/authenticator) |  | [Yes](https://github.com/mozilla/authenticator-rs/pull/361) |  |
+| [authenticator](https://crates.io/crates/authenticator) |  | [Yes](https://github.com/mozilla/authenticator-rs/pull/361) | Yes |
 | [solana-accounts-db](https://crates.io/crates/solana-accounts-db) |  |  |  |
 | [const-field-offset-macro](https://crates.io/crates/const-field-offset-macro) | 1.88 |  |  |
 | [imgui](https://crates.io/crates/imgui) | 1.82 | [Yes](https://github.com/imgui-rs/imgui-rs/pull/845) |  |

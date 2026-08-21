@@ -1,10 +1,10 @@
 ---
-title: "An ode to sd, a home for all my hacky shell scripts"
+title: "An ode to sd, home to all my hacky shell scripts"
 ---
 
 `sd` will not "revolutionize" anything you do,
 it's just one of those things quietly in the background providing comfort
-without you having to think about it.
+without you having to pay attention to it.
 
 Here's how [the project](https://github.com/ianthehenry/sd) describes itself:
 
@@ -21,7 +21,7 @@ I especially liked this part:
 
 Here's my elevator pitch for `sd`:
 
-> `sd` allows you to organise and run all your (oneliner) shell scripts while keeping your `$PATH` clean.
+> `sd` allows you to organize and run all your (oneliner) shell scripts while keeping your `$PATH` clean.
 
 ## Usage
 Let's take a look at `sd` in practice.
@@ -66,21 +66,22 @@ $ sd qr 'https://github.com/ianthehenry/sd'
 ```
 
 Yes, this script could have been an [alias](https://en.wikipedia.org/wiki/Alias_(command)).
-The extra namespacing still assures me.
+The extra namespacing and findability are worth it to me.
 
 ## Filesystem
 `sd` is a one-to-one mapping between the arguments it takes and the filesystem.
 
-It first drills down into your script directory like subcommands,
+It first drills down into your script directory with subcommands,
 then passes the rest of the arguments to your script.
 
 TODO
 
 ## Kernel
-One could theoretically obtain the core feature of `sd` by modifying your kernel's `exec` function to traverse directories and pop args as described above.
+One could theoretically obtain the core feature of `sd` by modifying your kernel's `exec` function to traverse directories and pop arguments as described above.
 You'd then only need an `alias sd=~/sd`{lang=bash}.
 
 I do not know of any operating system that has done this.
+
 Neither do I know if it would be practical.
 
 ## Conclusion
@@ -93,7 +94,7 @@ it could be interesting to compare and contrast.
 
 One more thing: `sd` is so conceptually simple and easy to hack on
 that [I rewrote it](https://github.com/syberant/sdr) into a small
-^[210 lines of code spread over 2 files, 1 transitive dependency (on `anyhow`)]
+^[currently 264 lines of code (according to [tokei](https://github.com/XAMPPRocky/tokei)) spread over 2 files, 1 transitive dependency (on `anyhow`). You can make it smaller if you want to by removing features or codegolfing.]
 Rust project.
 
 Just because I'm bad at bash and

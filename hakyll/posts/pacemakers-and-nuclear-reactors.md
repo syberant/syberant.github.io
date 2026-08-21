@@ -11,6 +11,10 @@ Different people/companies/languages/communities/etc. do it in different ways an
 I'll just tell you straight that I don't "know" error handling and won't pretend to have the answer to your questions.
 My own favorite programming language, Rust, has multiple popular methods of doing error handling with a lot of (seemingly good natured, that's nice) debate on how you "should" do it.
 ^[TODO: links to some blogposts]
+<!-- https://mmapped.blog/posts/12-rust-error-handling -->
+<!-- https://jtjlehi.github.io/2026/06/25/novel-rust-error-handling.html -->
+<!-- https://burntsushi.net/rust-error-handling/ -->
+<!-- https://blog.logrocket.com/error-handling-rust/ -->
 
 But there is one thing that seems to be universally important.
 You should ask yourself: Where does my usecase fall on the spectrum between pacemakers and nuclear reactors?
