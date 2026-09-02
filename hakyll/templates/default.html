@@ -5,7 +5,7 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>syberant's blog - $title$</title>
-        <link rel="stylesheet" href="/css/default.css" />
+        <link rel="stylesheet" href="/css/default.css">
 
         <!-- KaTeX math -->
         <link rel="stylesheet" href="/katex/katex.min.css">
@@ -13,6 +13,11 @@
         <script defer src="/katex/katex.min.js"></script>
         <!-- To automatically render math in text elements, include the auto-render extension: -->
         <script defer src="/katex/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+        <!-- CSS snippet to help debug KaTeX functionality -->
+        <style>
+          .katex-version {display: none;}
+          .katex-version::after {content:"0.10.2 or earlier";}
+        </style>
     </head>
     <body>
         <header>
@@ -26,7 +31,7 @@
             </nav>
         </header>
 
-        <main role="main">
+        <main>
             <h1>$title$</h1>
             $body$
         </main>
@@ -39,10 +44,6 @@
 
             <br>
 
-            <style>
-              .katex-version {display: none;}
-              .katex-version::after {content:"0.10.2 or earlier";}
-            </style>
             <span class="katex">
               <span class="katex-mathml">The KaTeX stylesheet is not loaded!</span>
               <span class="katex-version rule">KaTeX stylesheet version: </span>
