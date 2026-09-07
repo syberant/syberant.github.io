@@ -13,19 +13,7 @@ import           SideNoteHTML (usingSideNotesHTML)
 --------------------------------------------------------------------------------
 main :: IO ()
 main = hakyll $ do
-    match "assets/*" $ do
-        route   idRoute
-        compile copyFileCompiler
-
-    match "images/*" $ do
-        route   idRoute
-        compile copyFileCompiler
-
-    match "css/*" $ do
-        route   idRoute
-        compile compressCssCompiler
-
-    match "katex/**" $ do
+    match "assets/**" $ do
         route   idRoute
         compile copyFileCompiler
 
