@@ -1,11 +1,6 @@
-{
-  inputs.nixpkgs.url = "nixpkgs";
-  inputs.flake-utils.url = "github:numtide/flake-utils";
+{ pkgs ? import <nixpkgs> {} }:
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
-
-let pkgs = import nixpkgs { inherit system; };
+let
   builder = pkgs.haskellPackages.developPackage {
     root = pkgs.nix-gitignore.gitignoreSourcePure [ "dist-newstyle" "dist" ".git"] ./.;
 
@@ -43,31 +38,15 @@ let pkgs = import nixpkgs { inherit system; };
       cp -r _site $out
     '';
   };
- in {
-      apps = rec {
-        site = flake-utils.lib.mkApp {
-          drv = builder;
-          exePath = "/bin/site";
-        };
 
-        watch = let derivation = pkgs.writeShellScript "hakyll-watch" ''
-          xdg-open _site/index.html;
+  watch = let derivation = pkgs.writeShellScript "hakyll-watch" ''
+    xdg-open _site/index.html;
 
-          ${builder}/bin/site watch
-          '';
-          in {
-          type = "app";
-          program = "${derivation}";
-        };
+    ${builder}/bin/site watch
+    '';
+    in {
+    type = "app";
+    program = "${derivation}";
+  };
 
-        default = watch;
-      };
-      packages = {
-        inherit builder site;
-
-        # Run `nix build` to build the site
-        default = site;
-      };
-
-    });
-}
+ in site

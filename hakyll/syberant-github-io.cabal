@@ -7,7 +7,7 @@ executable site
   main-is:          site.hs
   other-modules:    SideNoteHTML
   build-depends:    base == 4.*
-                  , hakyll == 4.16.*
+                  , hakyll == 4.*
                   , pandoc == 3.*
                   , pandoc-types == 1.*
                   , text == 2.*
