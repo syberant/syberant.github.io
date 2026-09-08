@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>syberant's blog - Project "Remove memoffset"</title>
+        <link rel="stylesheet" href="../assets/css/default.css">
+
+        <!-- KaTeX math -->
+        <link rel="stylesheet" href="../assets/katex/katex.min.css">
+        <!-- The loading of KaTeX is deferred to speed up page rendering -->
+        <script defer src="../assets/katex/katex.min.js"></script>
+        <!-- To automatically render math in text elements, include the auto-render extension: -->
+        <script defer src="../assets/katex/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+        <!-- CSS snippet to help debug KaTeX functionality -->
+        <style>
+          .katex-version {display: none;}
+          .katex-version::after {content:"0.10.2 or earlier";}
+        </style>
+    </head>
+    <body>
+        <header>
+            <div class="logo">
+                <a href="../">∞ recursion</a>
+            </div>
+            <nav>
+                <a href="../">Blog</a>
+                <a href="https://github.com/syberant/syberant.github.io">Git Repo</a>
+                <a href="../archive.html">Archive</a>
+            </nav>
+        </header>
+
+        <main>
+            <h1>Project "Remove memoffset"</h1>
+            <article>
+    <section class="header">
+        
+            Draft, here be dragons.
+        
+    </section>
+    <section>
+        I recently attempted to prune some dependencies for one of my projects which resulted in <a href="https://github.com/Amanieu/intrusive-rs/pull/107">this PR</a>
+replacing <code>memoffset::offset_of</code> with <a href="https://doc.rust-lang.org/core/mem/macro.offset_of.html"><code>core::mem::offset_of</code></a>.
+<p></p>
+Two things made this possible:
+<ol type="1">
+<li>That crate’s MSRV <!--
+--><label for="sn-0" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-0" class="margin-toggle" /><div class="sidenote">Minimum Supported Rust Version</div><!--
+--> was above 1.77 which was when <code>core::mem::offset_of</code> was stabilised.</li>
+<li>The two macros should be completely compatible. <code>memoffset</code> states that</li>
+</ol>
+<blockquote>
+<p></p>
+If you’re using a rustc version greater or equal to 1.77,
+this crate’s offset_of!() macro simply forwards to core::mem::offset_of!().
+</blockquote>
+<p></p>
+The PR was merged :)
+<p></p>
+I then wondered <em>how many other crates still unnecessarily have such a dependency on <code>memoffset</code>?</em>
+<p></p>
+crates.io showed 237 <a href="https://crates.io/crates/memoffset/reverse_dependencies">reverse dependencies</a>, of which 1 has already accepted my PR to fix things.
+<p></p>
+I am NOT going to fix all of them
+<!--
+--><label for="sn-1" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-1" class="margin-toggle" /><div class="sidenote">and some can’t remove this dependency because they want to support a MSRV below 1.77</div><!--
+-->
+but let’s have a go and fire off a bunch of PRs, shall we?
+<hr />
+<p></p>
+Some observations from looking at a bunch of crates and sending out a lot of PRs.
+<p></p>
+<strong>MSRV is often quite unclear.</strong>
+Upstream MSRV can differ substantially from the MSRV in the latest release version, particularly for crates with a low release frequency.
+The <code>edition</code> (like e.g. Rust 2021) required is sometimes not available on the declared MSRV.
+Platform-specific or dev-dependencies can have more relaxed standards than the “main” codebase.
+Component or helper crates in larger codebases sometimes don’t have any MSRV declared while the “main” crates do.
+<p></p>
+<strong>People are really friendly.</strong>
+I’ve had nothing but good interactions with complete strangers during this project which actually brightened up my day.
+It feels good, worth trying if you need a dose of positivity.
+Many issues and PRs were swiftly handled and so far none were refused.
+<p></p>
+<strong>There’s low-hanging fruit in removing old dependencies.</strong>
+I stumbled on this by accident but the list of other crates (partially) moved into <code>std</code> is substantial.
+Admittedly, many uses are only as a dev-dependency.
+<hr />
+<p></p>
+In a year or so we can start doing the same trick by replacing uses of the <code>cfg-if</code> crate with <code>cfg_select</code> <a href="https://blog.rust-lang.org/2026/04/16/Rust-1.95.0/#cfg-select">introduced recently in 1.95</a>.
+<p></p>
+I started thinking about what other old dependencies can be removed but
+<a href="https://rust-lang.github.io/std-replacement-data/all.json">this list</a>
+from <a href="https://github.com/rust-lang/std-replacement-data">rust-lang/std-replacement-data</a>
+contains exactly that information!
+<hr />
+<!--
+Hi, I may or may not have used your crate but I'd like to say a quick thank you for it anyway!
+I'm going down the list of reverse dependencies on `memoffset`.
+
+This PR aims to remove the `memoffset` crate from your dependencies.
+[`core::mem::offset_of`](https://doc.rust-lang.org/core/mem/macro.offset_of.html) was stabilised in rustc 1.77 which I believe is at or below your MSRV.
+
+The `memoffset` crate 0.9.1 says that
+
+> If you're using a rustc version greater or equal to 1.77,
+> this crate's offset_of!() macro simply forwards to core::mem::offset_of!().
+
+I consider it very unlikely (see [here](https://github.com/rust-lang/rust/issues/111839)) for any usage of the `offset_of!` macro to break but please check anyway.
+I hope we can all enjoy the benefits of one less dependency :)
+-->
+<!-- As commit message I use the following: -->
+<!--
+`memoffset::offset_of!` was stabilised as `core::mem::offset_of!` in rust 1.77
+-->
+<p></p>
+Here’s a list of reverse dependencies sorted by total downloads, I stopped when total downloads dipped below 50k.
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Crate</th>
+<th style="text-align: right;">MSRV</th>
+<th style="text-align: right;">PR sent</th>
+<th style="text-align: right;">Fixed/PR accepted</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/rustix">rustix</a></td>
+<td style="text-align: right;">1.65</td>
+<td style="text-align: right;">No, also uses <code>span_of!</code></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/nix">nix</a></td>
+<td style="text-align: right;">1.69</td>
+<td style="text-align: right;">No, <a href="https://github.com/nix-rust/nix/issues/2389">aware</a></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/zlib-rs">zlib-rs</a></td>
+<td style="text-align: right;">1.75</td>
+<td style="text-align: right;">No, <a href="https://github.com/trifectatechfoundation/zlib-rs/blob/4a9d306de9b748e8e3631a97d60910420675b785/zlib-rs/src/deflate.rs#L4300">aware</a></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/objc2">objc2</a></td>
+<td style="text-align: right;">1.71</td>
+<td style="text-align: right;"><a href="https://github.com/madsmtm/objc2/issues/851">Issue</a></td>
+<td style="text-align: right;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/wayland-sys">wayland-sys</a></td>
+<td style="text-align: right;">1.86</td>
+<td style="text-align: right;"><a href="https://github.com/Smithay/wayland-rs/pull/939">Yes</a></td>
+<td style="text-align: right;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/uds_windows">uds_windows</a></td>
+<td style="text-align: right;">1.85</td>
+<td style="text-align: right;"><a href="https://github.com/haraldh/rust_uds_windows/pull/25">Yes</a></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/field-offset">field-offset</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">No</td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/solana-program">solana-program</a></td>
+<td style="text-align: right;">1.81</td>
+<td style="text-align: right;"><a href="https://github.com/anza-xyz/solana-sdk/pull/816">Yes</a></td>
+<td style="text-align: right;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/egui_glow">egui_glow</a></td>
+<td style="text-align: right;">1.92</td>
+<td style="text-align: right;"><a href="https://github.com/emilk/egui/pull/8304">Yes</a></td>
+<td style="text-align: right;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/intrusive-collections">intrusive-collections</a></td>
+<td style="text-align: right;">1.82</td>
+<td style="text-align: right;"><a href="https://github.com/Amanieu/intrusive-rs/pull/107">Yes</a></td>
+<td style="text-align: right;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/wasmtime-runtime">wasmtime-runtime</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">dead crate</td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/foyer-intrusive-collections">foyer-intrusive-collections</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/wasmer-types">wasmer-types</a></td>
+<td style="text-align: right;">1.93</td>
+<td style="text-align: right;"><a href="https://github.com/wasmerio/wasmer/pull/6782">Yes</a></td>
+<td style="text-align: right;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/wasmer-vm">wasmer-vm</a></td>
+<td style="text-align: right;">1.93</td>
+<td style="text-align: right;"><a href="https://github.com/wasmerio/wasmer/pull/6782">Yes</a></td>
+<td style="text-align: right;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/solana-stable-layout">solana-stable-layout</a></td>
+<td style="text-align: right;">1.89</td>
+<td style="text-align: right;"><a href="https://github.com/anza-xyz/solana-sdk/pull/816">Yes</a></td>
+<td style="text-align: right;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/solana-loader-v4-interface">solana-loader-v4-interface</a></td>
+<td style="text-align: right;">1.89</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/solana-runtime">solana-runtime</a></td>
+<td style="text-align: right;">2024 edition</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/blazesym-c">blazesym-c</a></td>
+<td style="text-align: right;">1.88</td>
+<td style="text-align: right;"><a href="https://github.com/libbpf/blazesym/pull/1608">Yes</a></td>
+<td style="text-align: right;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/starlark">starlark</a></td>
+<td style="text-align: right;">2024 edition</td>
+<td style="text-align: right;"><a href="https://github.com/facebook/starlark-rust/issues/214">Issue</a></td>
+<td style="text-align: right;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/glium">glium</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/virtio-queue">virtio-queue</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/authenticator">authenticator</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"><a href="https://github.com/mozilla/authenticator-rs/pull/361">Yes</a></td>
+<td style="text-align: right;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/solana-accounts-db">solana-accounts-db</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/const-field-offset-macro">const-field-offset-macro</a></td>
+<td style="text-align: right;">1.88</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/imgui">imgui</a></td>
+<td style="text-align: right;">1.82</td>
+<td style="text-align: right;"><a href="https://github.com/imgui-rs/imgui-rs/pull/845">Yes</a></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/speedy">speedy</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/type-layout">type-layout</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/ggez">ggez</a></td>
+<td style="text-align: right;">1.56</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/implib">implib</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/near-vm-runner">near-vm-runner</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/wasmer-vm-near">wasmer-vm-near</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/wasmer-compiler-singlepass-near">wasmer-compiler-singlepass-near</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/ntfs">ntfs</a></td>
+<td style="text-align: right;">1.83</td>
+<td style="text-align: right;"><a href="https://github.com/ColinFinck/ntfs/pull/39">Yes</a></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/gpgme">gpgme</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/az-cvm-vtpm">az-cvm-vtpm</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/linera-wasmer-vm">linera-wasmer-vm</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/cargo-modules">cargo-modules</a></td>
+<td style="text-align: right;">1.91</td>
+<td style="text-align: right;">Waiting on <code>intrusive-collections</code></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/pgx-pg-sys">pgx-pg-sys</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/savefile">savefile</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/mpi">mpi</a></td>
+<td style="text-align: right;">1.78</td>
+<td style="text-align: right;"><a href="https://github.com/rsmpi/rsmpi/pull/225">Yes</a></td>
+<td style="text-align: right;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/perf-event-open-sys2">perf-event-open-sys2</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/intuicio-core">intuicio-core</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/imgui-glow-renderer">imgui-glow-renderer</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/c-scape">c-scape</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/dep-obj">dep-obj</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/samply">samply</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/authenticator-ctap2-2021">authenticator-ctap2-2021</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/fdt-rs">fdt-rs</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/lean-sys">lean-sys</a></td>
+<td style="text-align: right;">No</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/ktls">ktls</a></td>
+<td style="text-align: right;">1.75</td>
+<td style="text-align: right;"><a href="https://github.com/rustls/ktls/issues/71">Issue</a></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/nbdkit">nbdkit</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/substrate-wasmtime-runtime">substrate-wasmtime-runtime</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/pc-ints">pc-ints</a></td>
+<td style="text-align: right;">1.91</td>
+<td style="text-align: right;"><a href="https://github.com/A1-Triard/pc-ints/pull/2">Yes</a></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/libertyos_kernel">libertyos_kernel</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">dead crate</td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/fyrox-core">fyrox-core</a></td>
+<td style="text-align: right;">1.87</td>
+<td style="text-align: right;"><a href="https://github.com/FyroxEngine/Fyrox/pull/925">Yes</a></td>
+<td style="text-align: right;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/lightbeam">lightbeam</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/light-bounded-vec">light-bounded-vec</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/pete">pete</a></td>
+<td style="text-align: right;">1.64</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/ferrisetw">ferrisetw</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/miraland-program">miraland-program</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/super_speedy_syslog_searcher">super_speedy_syslog_searcher</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/redbpf-probes">redbpf-probes</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/redbpf-macros">redbpf-macros</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/near-vm-vm">near-vm-vm</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/eastl-rs">eastl-rs</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/rg3d-core">rg3d-core</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">dead crate</td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/near-vm-compiler-singlepass">near-vm-compiler-singlepass</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/rafx-framework">rafx-framework</a></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://crates.io/crates/mmtk">mmtk</a></td>
+<td style="text-align: right;">1.84</td>
+<td style="text-align: right;"><a href="https://github.com/mmtk/mmtk-core/pull/1520">Yes</a></td>
+<td style="text-align: right;">Yes</td>
+</tr>
+</tbody>
+</table>
+<p></p>
+Not sure how I feel about helping (even this tiniest bit) facebook and blockchain companies…
+    </section>
+</article>
+
+        </main>
+
+        <footer>
+            <span style="float: left; text-align: left;">🇪🇺 🇳🇱 <br> 🦀❄️🐧</span>
+
+            Site proudly generated by
+            <a href="https://jaspervdj.be/hakyll">Hakyll</a>
+
+            <br>
+
+            <span class="katex">
+              <span class="katex-mathml">The KaTeX stylesheet is not loaded!</span>
+              <span class="katex-version rule">KaTeX stylesheet version: </span>
+            </span>
+
+            <br>
+
+            No LLMs were used to create this website
+
+            <br>
+
+            <img src="../assets/88x31/iso8601.png" width="88" height="31" alt="ISO8601" />
+            <a href="https://brennan.day/indieweb/"><img src="../assets/88x31/make-a-website.gif" width="88" height="31" alt="Make your own website!" /></a>
+            <img src="../assets/88x31/css.jpg" width="88" height="31" alt="CSS is awesome" />
+            <img src="../assets/88x31/chrome&ie.gif" width="88" height="31" alt="Oppose chrome monopoly" />
+        </footer>
+    </body>
+</html>

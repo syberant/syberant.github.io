@@ -4,15 +4,20 @@
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>syberant's blog - An ode to sd, a home for all my hacky shell scripts</title>
-        <link rel="stylesheet" href="../css/default.css" />
+        <title>syberant's blog - An ode to sd, home to all my hacky shell scripts</title>
+        <link rel="stylesheet" href="../assets/css/default.css">
 
         <!-- KaTeX math -->
-        <link rel="stylesheet" href="../katex/katex.min.css">
+        <link rel="stylesheet" href="../assets/katex/katex.min.css">
         <!-- The loading of KaTeX is deferred to speed up page rendering -->
-        <script defer src="../katex/katex.min.js"></script>
+        <script defer src="../assets/katex/katex.min.js"></script>
         <!-- To automatically render math in text elements, include the auto-render extension: -->
-        <script defer src="../katex/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+        <script defer src="../assets/katex/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+        <!-- CSS snippet to help debug KaTeX functionality -->
+        <style>
+          .katex-version {display: none;}
+          .katex-version::after {content:"0.10.2 or earlier";}
+        </style>
     </head>
     <body>
         <header>
@@ -26,8 +31,8 @@
             </nav>
         </header>
 
-        <main role="main">
-            <h1>An ode to sd, a home for all my hacky shell scripts</h1>
+        <main>
+            <h1>An ode to sd, home to all my hacky shell scripts</h1>
             <article>
     <section class="header">
         
@@ -37,7 +42,7 @@
     <section>
         <code>sd</code> will not “revolutionize” anything you do,
 it’s just one of those things quietly in the background providing comfort
-without you having to think about it.
+without you having to pay attention to it.
 <p></p>
 Here’s how <a href="https://github.com/ianthehenry/sd">the project</a> describes itself:
 <blockquote>
@@ -59,7 +64,7 @@ because it was too much of a hassle and who knows if they’ll ever run it again
 Here’s my elevator pitch for <code>sd</code>:
 <blockquote>
 <p></p>
-<code>sd</code> allows you to organise and run all your (oneliner) shell scripts while keeping your <code>$PATH</code> clean.
+<code>sd</code> allows you to organize and run all your (oneliner) shell scripts while keeping your <code>$PATH</code> clean.
 </blockquote>
 <h2 id="usage">Usage</h2>
 <p></p>
@@ -100,21 +105,22 @@ If none of the known flags are used, then the script is executed with the given 
 <span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="ex">█████████████████████████████████████</span></span></code></pre></div>
 <p></p>
 Yes, this script could have been an <a href="https://en.wikipedia.org/wiki/Alias_(command)">alias</a>.
-The extra namespacing still assures me.
+The extra namespacing and findability are worth it to me.
 <h2 id="filesystem">Filesystem</h2>
 <p></p>
 <code>sd</code> is a one-to-one mapping between the arguments it takes and the filesystem.
 <p></p>
-It first drills down into your script directory like subcommands,
+It first drills down into your script directory with subcommands,
 then passes the rest of the arguments to your script.
 <p></p>
 TODO
 <h2 id="kernel">Kernel</h2>
 <p></p>
-One could theoretically obtain the core feature of <code>sd</code> by modifying your kernel’s <code>exec</code> function to traverse directories and pop args as described above.
+One could theoretically obtain the core feature of <code>sd</code> by modifying your kernel’s <code>exec</code> function to traverse directories and pop arguments as described above.
 You’d then only need an <code lang="bash">alias sd=~/sd</code>.
 <p></p>
 I do not know of any operating system that has done this.
+<p></p>
 Neither do I know if it would be practical.
 <h2 id="conclusion">Conclusion</h2>
 <p></p>
@@ -127,7 +133,7 @@ it could be interesting to compare and contrast.
 One more thing: <code>sd</code> is so conceptually simple and easy to hack on
 that <a href="https://github.com/syberant/sdr">I rewrote it</a> into a small
 <!--
---><label for="sn-0" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-0" class="margin-toggle" /><div class="sidenote">210 lines of code spread over 2 files, 1 transitive dependency (on <code>anyhow</code>)</div><!--
+--><label for="sn-0" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-0" class="margin-toggle" /><div class="sidenote">currently 264 lines of code (according to <a href="https://github.com/XAMPPRocky/tokei">tokei</a>) spread over 2 files, 1 transitive dependency (on <code>anyhow</code>). You can make it smaller if you want to by removing features or codegolfing.</div><!--
 -->
 Rust project.
 <p></p>
@@ -146,10 +152,6 @@ didn’t want to forever depend on a third-party script for something this simpl
 
             <br>
 
-            <style>
-              .katex-version {display: none;}
-              .katex-version::after {content:"0.10.2 or earlier";}
-            </style>
             <span class="katex">
               <span class="katex-mathml">The KaTeX stylesheet is not loaded!</span>
               <span class="katex-version rule">KaTeX stylesheet version: </span>
@@ -158,6 +160,13 @@ didn’t want to forever depend on a third-party script for something this simpl
             <br>
 
             No LLMs were used to create this website
+
+            <br>
+
+            <img src="../assets/88x31/iso8601.png" width="88" height="31" alt="ISO8601" />
+            <a href="https://brennan.day/indieweb/"><img src="../assets/88x31/make-a-website.gif" width="88" height="31" alt="Make your own website!" /></a>
+            <img src="../assets/88x31/css.jpg" width="88" height="31" alt="CSS is awesome" />
+            <img src="../assets/88x31/chrome&ie.gif" width="88" height="31" alt="Oppose chrome monopoly" />
         </footer>
     </body>
 </html>

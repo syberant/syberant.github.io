@@ -5,14 +5,19 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>syberant's blog - Drafts</title>
-        <link rel="stylesheet" href="./css/default.css" />
+        <link rel="stylesheet" href="./assets/css/default.css">
 
         <!-- KaTeX math -->
-        <link rel="stylesheet" href="./katex/katex.min.css">
+        <link rel="stylesheet" href="./assets/katex/katex.min.css">
         <!-- The loading of KaTeX is deferred to speed up page rendering -->
-        <script defer src="./katex/katex.min.js"></script>
+        <script defer src="./assets/katex/katex.min.js"></script>
         <!-- To automatically render math in text elements, include the auto-render extension: -->
-        <script defer src="./katex/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+        <script defer src="./assets/katex/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+        <!-- CSS snippet to help debug KaTeX functionality -->
+        <style>
+          .katex-version {display: none;}
+          .katex-version::after {content:"0.10.2 or earlier";}
+        </style>
     </head>
     <body>
         <header>
@@ -26,7 +31,7 @@
             </nav>
         </header>
 
-        <main role="main">
+        <main>
             <h1>Drafts</h1>
             I do not yet feel these are good enough to publish but publishing in this intermediate stage helps my workflow.
 Links will break when I figure they're good enough and properly publish them.
@@ -48,11 +53,15 @@ These pages may contain various inaccuracies or outright falsehoods that have ye
         </li>
     
         <li>
-            <a href="./posts/ode-to-sd.html">An ode to sd, a home for all my hacky shell scripts</a>  (Draft) 
+            <a href="./posts/ode-to-sd.html">An ode to sd, home to all my hacky shell scripts</a>  (Draft) 
         </li>
     
         <li>
             <a href="./posts/pacemakers-and-nuclear-reactors.html">Error handling: pacemakers and nuclear reactors</a>  (Draft) 
+        </li>
+    
+        <li>
+            <a href="./posts/project-remove-memoffset.html">Project "Remove memoffset"</a>  (Draft) 
         </li>
     
         <li>
@@ -72,10 +81,6 @@ These pages may contain various inaccuracies or outright falsehoods that have ye
 
             <br>
 
-            <style>
-              .katex-version {display: none;}
-              .katex-version::after {content:"0.10.2 or earlier";}
-            </style>
             <span class="katex">
               <span class="katex-mathml">The KaTeX stylesheet is not loaded!</span>
               <span class="katex-version rule">KaTeX stylesheet version: </span>
@@ -84,6 +89,13 @@ These pages may contain various inaccuracies or outright falsehoods that have ye
             <br>
 
             No LLMs were used to create this website
+
+            <br>
+
+            <img src="./assets/88x31/iso8601.png" width="88" height="31" alt="ISO8601" />
+            <a href="https://brennan.day/indieweb/"><img src="./assets/88x31/make-a-website.gif" width="88" height="31" alt="Make your own website!" /></a>
+            <img src="./assets/88x31/css.jpg" width="88" height="31" alt="CSS is awesome" />
+            <img src="./assets/88x31/chrome&ie.gif" width="88" height="31" alt="Oppose chrome monopoly" />
         </footer>
     </body>
 </html>

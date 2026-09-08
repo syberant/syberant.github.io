@@ -5,14 +5,19 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>syberant's blog - Lifelong recording is actually feasible</title>
-        <link rel="stylesheet" href="../css/default.css" />
+        <link rel="stylesheet" href="../assets/css/default.css">
 
         <!-- KaTeX math -->
-        <link rel="stylesheet" href="../katex/katex.min.css">
+        <link rel="stylesheet" href="../assets/katex/katex.min.css">
         <!-- The loading of KaTeX is deferred to speed up page rendering -->
-        <script defer src="../katex/katex.min.js"></script>
+        <script defer src="../assets/katex/katex.min.js"></script>
         <!-- To automatically render math in text elements, include the auto-render extension: -->
-        <script defer src="../katex/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+        <script defer src="../assets/katex/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+        <!-- CSS snippet to help debug KaTeX functionality -->
+        <style>
+          .katex-version {display: none;}
+          .katex-version::after {content:"0.10.2 or earlier";}
+        </style>
     </head>
     <body>
         <header>
@@ -26,7 +31,7 @@
             </nav>
         </header>
 
-        <main role="main">
+        <main>
             <h1>Lifelong recording is actually feasible</h1>
             <article>
     <section class="header">
@@ -140,10 +145,6 @@ It would also mess up your precious images with your friends and family.
 
             <br>
 
-            <style>
-              .katex-version {display: none;}
-              .katex-version::after {content:"0.10.2 or earlier";}
-            </style>
             <span class="katex">
               <span class="katex-mathml">The KaTeX stylesheet is not loaded!</span>
               <span class="katex-version rule">KaTeX stylesheet version: </span>
@@ -152,6 +153,13 @@ It would also mess up your precious images with your friends and family.
             <br>
 
             No LLMs were used to create this website
+
+            <br>
+
+            <img src="../assets/88x31/iso8601.png" width="88" height="31" alt="ISO8601" />
+            <a href="https://brennan.day/indieweb/"><img src="../assets/88x31/make-a-website.gif" width="88" height="31" alt="Make your own website!" /></a>
+            <img src="../assets/88x31/css.jpg" width="88" height="31" alt="CSS is awesome" />
+            <img src="../assets/88x31/chrome&ie.gif" width="88" height="31" alt="Oppose chrome monopoly" />
         </footer>
     </body>
 </html>
