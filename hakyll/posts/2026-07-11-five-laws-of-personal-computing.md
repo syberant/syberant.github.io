@@ -12,13 +12,13 @@ Ranganathan's [Five Laws of Library Science](https://en.wikipedia.org/wiki/Five_
 
 Adapted to personal computing they could be:
 
-1. Programs are for use *by the user*.
+1. Programs are for use by the *end-user*.
   ^[So no tracking, gambling mechanics, dark patterns, etc. Popups should only be used *to the benefit of the user*.]
 2. Every user their program.
   ^[In extremis this leads to *situated software*]
 3. Every program its user.
   ^[Old software can be stubbornly resilient. Initially released in 1978, WordStar is still used by George R. R. Martin.
-  I'll note that some software shouldn't be used (anymore) for security reasons, this is similar to how [poisonous books](https://en.wikipedia.org/wiki/Poison_Book_Project) should be removed and/or sealed.]
+  I'll note that some software shouldn't be used (anymore) for security reasons, this is similar to how [poisonous books](https://en.wikipedia.org/wiki/Poison_Book_Project) should be removed and/or sealed but unfortunately much more common.]
 4. Save the time of the user.
 5. Software is a growing ecosystem.
   ^[Given the amount of actors pulling every which way I think software is better described as an ecosystem than an organism. When we don't limit our view to a particular platform, software might even qualify as a biosphere.]
