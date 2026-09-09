@@ -1,0 +1,14 @@
+# Try to keep all bots out, I'm okay with strictly search engines and archive sites but it's hard to only allow those
+User-agent: *
+Disallow: /
+Content-Signal: ai-train=no, search=yes, ai-input=no
+DisallowAITraining: /
+Content-Usage: ai=n
+
+# Allow search engines + IA to index my site
+User-Agent: googlebot
+User-Agent: bingbot
+User-Agent: DuckDuckBot
+User-Agent: archive.org_bot
+Content-Signal: ai-train=no, search=yes, ai-input=no
+Allow: /
