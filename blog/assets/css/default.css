@@ -384,3 +384,15 @@ figure {
     font-size: 100%;
     font: inherit;
 }
+
+/* View Transitions */
+/*
+ * https://css-tricks.com/toe-dipping-into-view-transitions/
+ * https://piccalil.li/blog/some-practical-examples-of-view-transitions-to-elevate-your-ui/
+ * https://piccalil.li/blog/start-implementing-view-transitions-on-your-websites-today/
+ */
+@media not (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: auto;
+  }
+}
