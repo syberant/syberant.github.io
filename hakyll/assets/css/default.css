@@ -39,6 +39,10 @@ body {
   color: #000;
 }
 
+/* Link colour (overwritten for menu's, etc.) */
+a { color: #3995F7; }
+a:visited { color: #8839F7; }
+
 header {
   border-bottom: 0.2rem solid #000;
 }
